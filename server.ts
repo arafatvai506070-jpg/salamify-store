@@ -1,5 +1,4 @@
 import express from "express";
-import { createServer as createViteServer } from "vite";
 import { createClient } from "@supabase/supabase-js";
 import path from "path";
 import dotenv from "dotenv";
@@ -13,8 +12,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
-
+  
+  // Basic middleware
   app.use(express.json({ limit: '50mb' }));
 
   // Request logging for debugging
@@ -438,7 +437,8 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV !== "production" && !process.env.VERCEL) {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
