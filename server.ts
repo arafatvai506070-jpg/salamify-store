@@ -445,10 +445,13 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.join(process.cwd(), "dist")));
-    app.get("*", (req, res) => {
-      if (req.path.startsWith('/api')) return; // Don't catch API routes
-      res.sendFile(path.join(process.cwd(), "dist", "index.html"));
+    // Serve static files from dist
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    
+    // Catch-all route for SPA, but EXCLUDE /api routes
+    app.get(/^(?!\/api).*/, (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
     });
   }
 
