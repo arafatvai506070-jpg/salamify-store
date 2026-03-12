@@ -217,7 +217,7 @@ export const Profile: React.FC = () => {
               {authMode === 'login' ? 'স্বাগতম!' : 'অ্যাকাউন্ট তৈরি করুন'}
             </h1>
             <p className="text-zinc-500 text-sm">
-              {authMode === 'login' ? 'আপনার প্রোফাইলে লগইন করুন' : 'Ghorer Bazar-এ আপনার যাত্রা শুরু করুন'}
+              {authMode === 'login' ? 'আপনার প্রোফাইলে লগইন করুন' : 'Salamify-এ আপনার যাত্রা শুরু করুন'}
             </p>
           </div>
 

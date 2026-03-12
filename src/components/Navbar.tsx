@@ -18,7 +18,7 @@ export const Navbar: React.FC = () => {
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-black tracking-tighter text-zinc-900 leading-none font-display">
-                  GHORER BAZAR<span className="text-emerald-500">.</span>
+                  Salamify<span className="text-emerald-500">.</span>
                 </span>
                 <span className="text-[8px] font-bold text-emerald-600 uppercase tracking-[0.3em] mt-0.5">
                   Premium Quality
