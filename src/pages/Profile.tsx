@@ -54,19 +54,13 @@ export const Profile: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      // Fetch orders
       const orderRes = await fetch(`/api/customer/orders?identifier=${encodeURIComponent(id)}`);
       if (orderRes.ok) {
         const orderData = await orderRes.json();
-        if (Array.isArray(orderData)) {
-          setOrders(orderData);
-        } else {
-          setOrders([]);
-        }
+        setOrders(Array.isArray(orderData) ? orderData : []);
         setIsLoggedIn(true);
         localStorage.setItem('customer_identifier', id);
         
-        // Fetch profile
         const profileRes = await fetch(`/api/customer/profile?identifier=${encodeURIComponent(id)}`);
         if (profileRes.ok) {
           const profileData = await profileRes.json();
@@ -98,10 +92,11 @@ export const Profile: React.FC = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        localStorage.setItem('customer_identifier', data.customer.email || data.customer.phone);
-        setIdentifier(data.customer.email || data.customer.phone);
+        const id = data.customer.email || data.customer.phone;
+        localStorage.setItem('customer_identifier', id);
+        setIdentifier(id);
         setIsLoggedIn(true);
-        fetchOrders(data.customer.email || data.customer.phone);
+        fetchOrders(id);
       } else {
         setError(data.error || 'Login failed');
       }
@@ -140,7 +135,6 @@ export const Profile: React.FC = () => {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
-    
     setSaving(true);
     try {
       const res = await fetch('/api/customer/profile', {
@@ -148,9 +142,7 @@ export const Profile: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(profile)
       });
-      if (res.ok) {
-        alert('Profile updated successfully!');
-      }
+      if (res.ok) alert('Profile updated successfully!');
     } catch (err) {
       alert('Failed to update profile');
     } finally {
@@ -209,101 +201,79 @@ export const Profile: React.FC = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4 py-20">
+      <div className="min-h-[80vh] flex items-center justify-center px-4 py-20 bg-white">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md bg-zinc-900 border border-white/10 rounded-[40px] p-10 shadow-2xl relative overflow-hidden"
+          className="w-full max-w-md bg-white border border-zinc-200 rounded-3xl p-10 shadow-xl relative overflow-hidden"
         >
-          {/* Decorative background */}
-          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500"></div>
+          <div className="absolute top-0 left-0 w-full h-1.5 bg-emerald-600"></div>
           
           <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-inner">
-              <User size={40} />
+            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-emerald-100">
+              <User size={32} />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">
+            <h1 className="text-2xl font-bold text-zinc-900 mb-2">
               {authMode === 'login' ? 'স্বাগতম!' : 'অ্যাকাউন্ট তৈরি করুন'}
             </h1>
             <p className="text-zinc-500 text-sm">
-              {authMode === 'login' 
-                ? 'আপনার প্রোফাইলে লগইন করুন' 
-                : 'Salamify-তে আপনার যাত্রা শুরু করুন'}
+              {authMode === 'login' ? 'আপনার প্রোফাইলে লগইন করুন' : 'Ghorer Bazar-এ আপনার যাত্রা শুরু করুন'}
             </p>
           </div>
 
           <form onSubmit={authMode === 'login' ? handleLogin : handleSignup} className="space-y-5">
             {authMode === 'signup' && (
-              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2 ml-1">Full Name</label>
+              <div>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Full Name</label>
                 <input 
-                  type="text" 
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-zinc-800/50 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-emerald-500 focus:bg-zinc-800 transition-all"
+                  type="text" required value={name} onChange={(e) => setName(e.target.value)}
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   placeholder="আপনার নাম লিখুন"
                 />
-              </motion.div>
+              </div>
             )}
-
             <div>
-              <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2 ml-1">
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">
                 {authMode === 'login' ? 'Email or Phone' : 'Email Address'}
               </label>
               <input 
-                type={authMode === 'login' ? 'text' : 'email'} 
-                required
+                type={authMode === 'login' ? 'text' : 'email'} required
                 value={authMode === 'login' ? identifier : email}
                 onChange={(e) => authMode === 'login' ? setIdentifier(e.target.value) : setEmail(e.target.value)}
-                className="w-full bg-zinc-800/50 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-emerald-500 focus:bg-zinc-800 transition-all"
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 placeholder={authMode === 'login' ? "e.g. 017XXXXXXXX or email@example.com" : "email@example.com"}
               />
             </div>
-
             {authMode === 'signup' && (
-              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2 ml-1">Phone Number</label>
+              <div>
+                <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Phone Number</label>
                 <input 
-                  type="tel" 
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-zinc-800/50 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-emerald-500 focus:bg-zinc-800 transition-all"
+                  type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)}
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                   placeholder="017XXXXXXXX"
                 />
-              </motion.div>
+              </div>
             )}
-
             <div>
-              <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2 ml-1">Password</label>
+              <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 ml-1">Password</label>
               <input 
-                type="password" 
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-zinc-800/50 border border-white/5 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-emerald-500 focus:bg-zinc-800 transition-all"
+                type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-3.5 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                 placeholder="••••••••"
               />
             </div>
 
             {error && (
-              <motion.p 
-                initial={{ opacity: 0, y: -10 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                className={cn("text-xs text-center font-medium", error.includes('successful') ? "text-emerald-500" : "text-red-500")}
-              >
+              <p className={cn("text-xs text-center font-medium", error.includes('successful') ? "text-emerald-600" : "text-red-500")}>
                 {error}
-              </motion.p>
+              </p>
             )}
 
             <button 
               disabled={loading}
-              className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-600/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4"
+              className="w-full bg-zinc-900 text-white py-4 rounded-xl font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-4 shadow-lg shadow-zinc-200"
             >
-              {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              ) : (
+              {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : (
                 <>
                   {authMode === 'login' ? 'লগইন করুন' : 'সাইন আপ করুন'}
                   <ArrowRight size={18} />
@@ -316,11 +286,8 @@ export const Profile: React.FC = () => {
             <p className="text-zinc-500 text-sm">
               {authMode === 'login' ? 'অ্যাকাউন্ট নেই?' : 'ইতিমধ্যে অ্যাকাউন্ট আছে?'}
               <button 
-                onClick={() => {
-                  setAuthMode(authMode === 'login' ? 'signup' : 'login');
-                  setError('');
-                }}
-                className="ml-2 text-emerald-500 font-bold hover:underline"
+                onClick={() => { setAuthMode(authMode === 'login' ? 'signup' : 'login'); setError(''); }}
+                className="ml-2 text-emerald-600 font-bold hover:underline"
               >
                 {authMode === 'login' ? 'নতুন অ্যাকাউন্ট খুলুন' : 'লগইন করুন'}
               </button>
@@ -332,27 +299,27 @@ export const Profile: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="bg-zinc-900 border border-white/10 rounded-[32px] p-8 shadow-xl">
+            <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
               <div className="flex flex-col items-center text-center mb-8">
                 <div className="relative group">
-                  <div className="w-24 h-24 bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 text-emerald-500 rounded-3xl flex items-center justify-center mb-4 border border-emerald-500/20 shadow-lg shadow-emerald-500/10 overflow-hidden">
+                  <div className="w-24 h-24 bg-zinc-50 text-zinc-400 rounded-3xl flex items-center justify-center mb-4 border border-zinc-200 shadow-inner overflow-hidden">
                     {profile?.profile_image ? (
                       <img src={profile.profile_image} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
                       <User size={48} />
                     )}
                   </div>
-                  <label className="absolute bottom-2 right-0 w-8 h-8 bg-emerald-600 rounded-xl flex items-center justify-center cursor-pointer hover:bg-emerald-500 transition-colors shadow-lg border-2 border-zinc-900">
+                  <label className="absolute bottom-2 right-0 w-8 h-8 bg-zinc-900 rounded-xl flex items-center justify-center cursor-pointer hover:bg-zinc-800 transition-colors shadow-lg border-2 border-white">
                     <Settings size={14} className="text-white" />
                     <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
                   </label>
                 </div>
-                <h2 className="text-xl font-bold text-white truncate w-full">{profile?.name || 'Customer'}</h2>
+                <h2 className="text-xl font-bold text-zinc-900 truncate w-full">{profile?.name || 'Customer'}</h2>
                 <p className="text-zinc-500 text-xs font-mono mt-1">{identifier}</p>
               </div>
 
@@ -366,10 +333,10 @@ export const Profile: React.FC = () => {
                     key={item.id}
                     onClick={() => setActiveSection(item.id as any)}
                     className={cn(
-                      "w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all",
+                      "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all",
                       activeSection === item.id 
-                        ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/20" 
-                        : "text-zinc-500 hover:text-white hover:bg-white/5"
+                        ? "bg-zinc-900 text-white shadow-lg shadow-zinc-200" 
+                        : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
                     )}
                   >
                     <item.icon size={18} />
@@ -378,7 +345,7 @@ export const Profile: React.FC = () => {
                 ))}
                 <button 
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-red-500 hover:bg-red-500/10 transition-all mt-4"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-500 hover:bg-red-50 transition-all mt-4"
                 >
                   <LogOut size={18} />
                   Logout
@@ -386,10 +353,10 @@ export const Profile: React.FC = () => {
               </nav>
             </div>
 
-            <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[32px] p-8 text-white shadow-xl shadow-emerald-900/20">
+            <div className="bg-emerald-600 rounded-3xl p-8 text-white shadow-xl shadow-emerald-100">
               <h3 className="text-lg font-bold mb-2">Need Help?</h3>
-              <p className="text-emerald-100 text-sm mb-6 leading-relaxed">Our support team is available 24/7 to assist you with your orders.</p>
-              <a href="tel:01700000000" className="inline-flex items-center gap-2 bg-white text-emerald-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-50 transition-colors">
+              <p className="text-emerald-50 text-sm mb-6 leading-relaxed">Our support team is available 24/7 to assist you with your orders.</p>
+              <a href="tel:01700000000" className="inline-flex items-center gap-2 bg-white text-emerald-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-emerald-50 transition-colors">
                 Contact Support
               </a>
             </div>
@@ -398,50 +365,41 @@ export const Profile: React.FC = () => {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {activeSection === 'dashboard' && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-8"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-3xl font-bold text-white tracking-tight">Welcome Back!</h1>
+                  <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">Welcome Back!</h1>
                   <div className="text-zinc-500 text-sm font-medium">
                     {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </div>
                 </div>
 
-                {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[
-                    { label: 'Total Orders', value: stats.totalOrders, icon: Package, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-                    { label: 'Total Spent', value: `৳${stats.totalSpent}`, icon: CreditCard, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
-                    { label: 'Pending', value: stats.pendingOrders, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-500/10' },
-                    { label: 'Completed', value: stats.deliveredOrders, icon: CheckCircle2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+                    { label: 'Total Orders', value: stats.totalOrders, icon: Package, color: 'text-blue-600', bg: 'bg-blue-50' },
+                    { label: 'Total Spent', value: `৳${stats.totalSpent}`, icon: CreditCard, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                    { label: 'Pending', value: stats.pendingOrders, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+                    { label: 'Completed', value: stats.deliveredOrders, icon: CheckCircle2, color: 'text-purple-600', bg: 'bg-purple-50' },
                   ].map((stat, i) => (
-                    <div key={i} className="bg-zinc-900 border border-white/10 p-6 rounded-[24px] shadow-sm">
+                    <div key={i} className="bg-white border border-zinc-200 p-6 rounded-3xl shadow-sm">
                       <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mb-4", stat.bg, stat.color)}>
                         <stat.icon size={20} />
                       </div>
                       <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-1">{stat.label}</p>
-                      <p className="text-2xl font-bold text-white">{stat.value}</p>
+                      <p className="text-2xl font-bold text-zinc-900">{stat.value}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* Recent Orders Preview */}
-                <div className="bg-zinc-900 border border-white/10 rounded-[32px] overflow-hidden shadow-xl">
-                  <div className="p-8 border-b border-white/5 flex justify-between items-center">
-                    <h3 className="text-xl font-bold text-white">Recent Orders</h3>
-                    <button 
-                      onClick={() => setActiveSection('orders')}
-                      className="text-emerald-500 text-sm font-bold hover:underline flex items-center gap-1"
-                    >
+                <div className="bg-white border border-zinc-200 rounded-3xl overflow-hidden shadow-sm">
+                  <div className="p-8 border-b border-zinc-100 flex justify-between items-center">
+                    <h3 className="text-xl font-bold text-zinc-900">Recent Orders</h3>
+                    <button onClick={() => setActiveSection('orders')} className="text-emerald-600 text-sm font-bold hover:underline flex items-center gap-1">
                       View All <ChevronRight size={16} />
                     </button>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead className="bg-white/5">
+                      <thead className="bg-zinc-50">
                         <tr>
                           <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-zinc-500">Order ID</th>
                           <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-zinc-500">Date</th>
@@ -449,33 +407,29 @@ export const Profile: React.FC = () => {
                           <th className="px-8 py-4 text-xs font-bold uppercase tracking-widest text-zinc-500">Total</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-white/5">
+                      <tbody className="divide-y divide-zinc-100">
                         {orders.slice(0, 5).map((order) => (
-                          <tr key={order.id} className="hover:bg-white/5 transition-colors cursor-pointer" onClick={() => setActiveSection('orders')}>
-                            <td className="px-8 py-4 font-mono text-xs text-zinc-400">#{order.id}</td>
-                            <td className="px-8 py-4 text-sm text-zinc-300">
-                              {new Date(order.created_at).toLocaleDateString()}
-                            </td>
+                          <tr key={order.id} className="hover:bg-zinc-50 transition-colors cursor-pointer" onClick={() => setActiveSection('orders')}>
+                            <td className="px-8 py-4 font-mono text-xs text-zinc-500">#{order.id}</td>
+                            <td className="px-8 py-4 text-sm text-zinc-600">{new Date(order.created_at).toLocaleDateString()}</td>
                             <td className="px-8 py-4">
                               <span className={cn(
                                 "text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-tighter",
-                                order.status === 'pending' ? "bg-amber-500/10 text-amber-500" : 
-                                order.status === 'approved' ? "bg-emerald-500/10 text-emerald-500" :
-                                order.status === 'processing' ? "bg-blue-500/10 text-blue-500" :
-                                order.status === 'shipped' ? "bg-purple-500/10 text-purple-500" :
-                                order.status === 'cancelled' ? "bg-red-500/10 text-red-500" :
-                                "bg-emerald-500/10 text-emerald-500"
+                                order.status === 'pending' ? "bg-amber-100 text-amber-700" : 
+                                order.status === 'approved' ? "bg-emerald-100 text-emerald-700" :
+                                order.status === 'processing' ? "bg-blue-100 text-blue-700" :
+                                order.status === 'shipped' ? "bg-purple-100 text-purple-700" :
+                                order.status === 'cancelled' ? "bg-red-100 text-red-700" :
+                                "bg-emerald-100 text-emerald-700"
                               )}>
                                 {order.status}
                               </span>
                             </td>
-                            <td className="px-8 py-4 font-bold text-white">৳{order.total}</td>
+                            <td className="px-8 py-4 font-bold text-zinc-900">৳{order.total}</td>
                           </tr>
                         ))}
                         {orders.length === 0 && (
-                          <tr>
-                            <td colSpan={4} className="px-8 py-12 text-center text-zinc-500">No recent orders found.</td>
-                          </tr>
+                          <tr><td colSpan={4} className="px-8 py-12 text-center text-zinc-500">No recent orders found.</td></tr>
                         )}
                       </tbody>
                     </table>
@@ -485,96 +439,85 @@ export const Profile: React.FC = () => {
             )}
 
             {activeSection === 'orders' && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
-              >
-                <h1 className="text-3xl font-bold text-white tracking-tight mb-8">Order History</h1>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                <h1 className="text-3xl font-bold text-zinc-900 tracking-tight mb-8">Order History</h1>
                 {loading ? (
-                  <div className="flex justify-center py-20">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
-                  </div>
+                  <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div></div>
                 ) : orders.length === 0 ? (
-                  <div className="bg-zinc-900 border border-white/10 rounded-[32px] p-12 text-center">
-                    <ShoppingBag size={48} className="mx-auto text-zinc-700 mb-4" />
-                    <h2 className="text-xl font-bold text-white mb-2">No orders found</h2>
+                  <div className="bg-white border border-zinc-200 rounded-3xl p-12 text-center shadow-sm">
+                    <ShoppingBag size={48} className="mx-auto text-zinc-200 mb-4" />
+                    <h2 className="text-xl font-bold text-zinc-900 mb-2">No orders found</h2>
                     <p className="text-zinc-500 mb-8">You haven't placed any orders yet.</p>
-                    <Link to="/" className="inline-block bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-500 transition-all">
-                      Start Shopping
-                    </Link>
+                    <Link to="/" className="inline-block bg-zinc-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-zinc-800 transition-all">Start Shopping</Link>
                   </div>
                 ) : (
                   <div className="space-y-6">
                     {orders.map((order) => (
-                      <div key={order.id} className="bg-zinc-900 border border-white/10 rounded-[32px] overflow-hidden shadow-xl hover:border-white/20 transition-all">
+                      <div key={order.id} className="bg-white border border-zinc-200 rounded-3xl overflow-hidden shadow-sm hover:border-zinc-300 transition-all">
                         <div className="p-8">
                           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                             <div className="flex items-center gap-4">
-                              <div className="w-14 h-14 bg-zinc-800 rounded-2xl flex items-center justify-center text-zinc-400">
+                              <div className="w-14 h-14 bg-zinc-50 rounded-2xl flex items-center justify-center text-zinc-400 border border-zinc-100">
                                 <Package size={28} />
                               </div>
                               <div>
                                 <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Order ID</p>
-                                <h3 className="text-xl font-bold text-white">#{order.id}</h3>
+                                <h3 className="text-xl font-bold text-zinc-900">#{order.id}</h3>
                               </div>
                             </div>
                             <div className={cn(
                               "flex items-center gap-2 px-4 py-2 rounded-xl border font-bold text-sm",
-                              order.status === 'pending' ? "bg-amber-500/10 text-amber-500 border-amber-500/20" : 
-                              order.status === 'approved' ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" :
-                              order.status === 'processing' ? "bg-blue-500/10 text-blue-500 border-blue-500/20" :
-                              order.status === 'shipped' ? "bg-purple-500/10 text-purple-500 border-purple-500/20" :
-                              order.status === 'cancelled' ? "bg-red-500/10 text-red-500 border-red-500/20" :
-                              "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                              order.status === 'pending' ? "bg-amber-50 text-amber-700 border-amber-100" : 
+                              order.status === 'approved' ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
+                              order.status === 'processing' ? "bg-blue-50 text-blue-700 border-blue-100" :
+                              order.status === 'shipped' ? "bg-purple-50 text-purple-700 border-purple-100" :
+                              order.status === 'cancelled' ? "bg-red-50 text-red-700 border-red-100" :
+                              "bg-emerald-50 text-emerald-700 border-emerald-100"
                             )}>
                               {getStatusIcon(order.status)}
                               {getStatusText(order.status)}
                             </div>
                           </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-white/5">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-zinc-100">
                             <div className="md:col-span-2 space-y-6">
                               <div>
                                 <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3">Order Summary</h4>
-                                <div className="bg-zinc-800/30 p-4 rounded-2xl border border-white/5 text-zinc-300 text-sm leading-relaxed">
-                                  {order.items_summary}
-                                </div>
+                                <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-100 text-zinc-600 text-sm leading-relaxed">{order.items_summary}</div>
                               </div>
                               <div className="grid grid-cols-2 gap-6">
                                 <div>
                                   <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Shipping To</h4>
-                                  <p className="text-white text-sm font-medium">{order.customer_name}</p>
-                                  <p className="text-zinc-400 text-xs mt-1">{order.address}, {order.area}, {order.city}</p>
+                                  <p className="text-zinc-900 text-sm font-bold">{order.customer_name}</p>
+                                  <p className="text-zinc-500 text-xs mt-1">{order.address}, {order.area}, {order.city}</p>
                                 </div>
                                 <div>
                                   <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Contact</h4>
-                                  <p className="text-zinc-400 text-xs flex items-center gap-2 mb-1"><Phone size={12} /> {order.customer_phone}</p>
-                                  <p className="text-zinc-400 text-xs flex items-center gap-2"><Mail size={12} /> {order.customer_email}</p>
+                                  <p className="text-zinc-500 text-xs flex items-center gap-2 mb-1"><Phone size={12} /> {order.customer_phone}</p>
+                                  <p className="text-zinc-500 text-xs flex items-center gap-2"><Mail size={12} /> {order.customer_email}</p>
                                 </div>
                               </div>
                             </div>
-                            <div className="bg-zinc-800/50 p-6 rounded-[24px] border border-white/5 flex flex-col justify-between">
-                              <div>
-                                <div className="flex justify-between items-center mb-4">
+                            <div className="bg-zinc-50 p-6 rounded-3xl border border-zinc-100 flex flex-col justify-between">
+                              <div className="space-y-4">
+                                <div className="flex justify-between items-center">
                                   <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Payment</span>
-                                  <span className="text-white font-bold text-sm uppercase">{order.payment_method}</span>
+                                  <span className="text-zinc-900 font-bold text-sm uppercase">{order.payment_method}</span>
                                 </div>
                                 {order.transaction_id && (
-                                  <div className="flex justify-between items-center mb-4">
+                                  <div className="flex justify-between items-center">
                                     <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">TX ID</span>
-                                    <span className="text-emerald-500 font-mono text-[10px]">{order.transaction_id}</span>
+                                    <span className="text-emerald-600 font-mono text-[10px] font-bold">{order.transaction_id}</span>
                                   </div>
                                 )}
-                                <div className="flex justify-between items-center mb-4">
+                                <div className="flex justify-between items-center">
                                   <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Date</span>
-                                  <span className="text-zinc-300 text-xs">{new Date(order.created_at).toLocaleDateString()}</span>
+                                  <span className="text-zinc-600 text-xs">{new Date(order.created_at).toLocaleDateString()}</span>
                                 </div>
                               </div>
-                              <div className="pt-4 border-t border-white/5">
+                              <div className="pt-4 border-t border-zinc-200 mt-4">
                                 <div className="flex justify-between items-center">
                                   <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Total</span>
-                                  <span className="text-2xl font-bold text-white">৳{order.total}</span>
+                                  <span className="text-2xl font-bold text-zinc-900">৳{order.total}</span>
                                 </div>
                               </div>
                             </div>
@@ -588,119 +531,61 @@ export const Profile: React.FC = () => {
             )}
 
             {activeSection === 'settings' && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-8"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-3xl font-bold text-white tracking-tight">Account Settings</h1>
-                  <button 
-                    onClick={handleUpdateProfile}
-                    disabled={saving}
-                    className="bg-emerald-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-emerald-500 transition-all disabled:opacity-50"
-                  >
+                  <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">Account Settings</h1>
+                  <button onClick={handleUpdateProfile} disabled={saving} className="bg-zinc-900 text-white px-6 py-2 rounded-xl font-bold hover:bg-zinc-800 transition-all disabled:opacity-50 shadow-lg shadow-zinc-200">
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
-
-                <div className="bg-zinc-900 border border-white/10 rounded-[32px] p-8 shadow-xl">
+                <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
                   <form onSubmit={handleUpdateProfile} className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div className="space-y-8">
                       <div>
-                        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                          <User size={20} className="text-emerald-500" />
-                          Personal Information
-                        </h3>
+                        <h3 className="text-lg font-bold text-zinc-900 mb-6 flex items-center gap-2"><User size={20} className="text-emerald-600" />Personal Information</h3>
                         <div className="space-y-4">
                           <div>
                             <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Full Name</label>
-                            <input 
-                              type="text" 
-                              value={profile?.name || ''} 
-                              onChange={(e) => setProfile(prev => prev ? { ...prev, name: e.target.value } : null)}
-                              className="w-full bg-zinc-800 border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" 
-                              placeholder="Your Name"
-                            />
+                            <input type="text" value={profile?.name || ''} onChange={(e) => setProfile(prev => prev ? { ...prev, name: e.target.value } : null)} className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="Your Name" />
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Bio / Details</label>
-                            <textarea 
-                              value={profile?.bio || ''} 
-                              onChange={(e) => setProfile(prev => prev ? { ...prev, bio: e.target.value } : null)}
-                              className="w-full bg-zinc-800 border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors h-24 resize-none" 
-                              placeholder="Tell us about yourself..."
-                            />
+                            <textarea value={profile?.bio || ''} onChange={(e) => setProfile(prev => prev ? { ...prev, bio: e.target.value } : null)} className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all h-24 resize-none" placeholder="Tell us about yourself..." />
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Email Address</label>
-                            <input 
-                              type="email" 
-                              value={profile?.email || ''} 
-                              readOnly
-                              className="w-full bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-zinc-500 cursor-not-allowed" 
-                            />
+                            <input type="email" value={profile?.email || ''} readOnly className="w-full bg-zinc-100 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-400 cursor-not-allowed" />
                           </div>
                           <div>
                             <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Phone Number</label>
-                            <input 
-                              type="text" 
-                              value={profile?.phone || ''} 
-                              readOnly
-                              className="w-full bg-zinc-800/50 border border-white/5 rounded-xl px-4 py-3 text-zinc-500 cursor-not-allowed" 
-                            />
+                            <input type="text" value={profile?.phone || ''} readOnly className="w-full bg-zinc-100 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-400 cursor-not-allowed" />
                           </div>
                         </div>
                       </div>
                     </div>
-
                     <div className="space-y-8">
                       <div>
-                        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                          <MapPin size={20} className="text-emerald-500" />
-                          Shipping Address
-                        </h3>
+                        <h3 className="text-lg font-bold text-zinc-900 mb-6 flex items-center gap-2"><MapPin size={20} className="text-emerald-600" />Shipping Address</h3>
                         <div className="space-y-4">
                           <div>
                             <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Street Address</label>
-                            <input 
-                              type="text" 
-                              value={profile?.address || ''} 
-                              onChange={(e) => setProfile(prev => prev ? { ...prev, address: e.target.value } : null)}
-                              className="w-full bg-zinc-800 border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" 
-                              placeholder="House #, Road #"
-                            />
+                            <input type="text" value={profile?.address || ''} onChange={(e) => setProfile(prev => prev ? { ...prev, address: e.target.value } : null)} className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="House #, Road #" />
                           </div>
                           <div className="grid grid-cols-2 gap-4">
                             <div>
                               <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">City</label>
-                              <input 
-                                type="text" 
-                                value={profile?.city || ''} 
-                                onChange={(e) => setProfile(prev => prev ? { ...prev, city: e.target.value } : null)}
-                                className="w-full bg-zinc-800 border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" 
-                                placeholder="City"
-                              />
+                              <input type="text" value={profile?.city || ''} onChange={(e) => setProfile(prev => prev ? { ...prev, city: e.target.value } : null)} className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="City" />
                             </div>
                             <div>
                               <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Area</label>
-                              <input 
-                                type="text" 
-                                value={profile?.area || ''} 
-                                onChange={(e) => setProfile(prev => prev ? { ...prev, area: e.target.value } : null)}
-                                className="w-full bg-zinc-800 border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" 
-                                placeholder="Area"
-                              />
+                              <input type="text" value={profile?.area || ''} onChange={(e) => setProfile(prev => prev ? { ...prev, area: e.target.value } : null)} className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all" placeholder="Area" />
                             </div>
                           </div>
                         </div>
                       </div>
-
-                      <div className="p-6 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-                        <p className="text-emerald-500 text-xs font-bold mb-2 uppercase tracking-widest">Pro Tip</p>
-                        <p className="text-zinc-400 text-xs leading-relaxed">
-                          Keeping your profile updated helps us process your orders faster and ensures accurate delivery.
-                        </p>
+                      <div className="p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <p className="text-emerald-600 text-xs font-bold mb-2 uppercase tracking-widest">Pro Tip</p>
+                        <p className="text-zinc-600 text-xs leading-relaxed">Keeping your profile updated helps us process your orders faster and ensures accurate delivery.</p>
                       </div>
                     </div>
                   </form>
