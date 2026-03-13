@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ShoppingBag, ArrowLeft, ShieldCheck, Truck, RotateCcw, MessageCircle, Zap } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, ShieldCheck, Truck, RotateCcw, MessageCircle, Zap, CheckCircle2 } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 
@@ -11,6 +11,10 @@ export const ProductDetails: React.FC = () => {
   const { addToCart } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [orderConfirmed, setOrderConfirmed] = useState(false);
+  const [orderId, setOrderId] = useState<number | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState({ name: '', phone: '', address: '' });
 
   useEffect(() => {
     fetch(`/api/products/${id}`)
@@ -25,6 +29,52 @@ export const ProductDetails: React.FC = () => {
   const handleWhatsAppOrder = () => {
     if (!product) return;
     const message = `আসসালামু আলাইকুম, আমি আপনার ওয়েবসাইট থেকে এই প্রোডাক্টটি কিনতে চাই।\n\nপ্রোডাক্ট: ${product.name}\nমূল্য: ৳${product.price}\nলিঙ্ক: ${window.location.href}`;
+    const whatsappUrl = `https://wa.me/8801886836315?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!product) return;
+    
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer: {
+            name: customerInfo.name,
+            phone: customerInfo.phone,
+            address: customerInfo.address,
+            city: 'N/A',
+            area: 'N/A',
+            email: 'N/A'
+          },
+          items: [{ ...product, quantity: 1 }],
+          total: product.price,
+          payment: { method: 'cod', transactionId: '' }
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setOrderId(data.id);
+        setOrderConfirmed(true);
+      } else {
+        alert('অর্ডার করতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('সার্ভারে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleWhatsAppRedirect = () => {
+    if (!product) return;
+    const message = `আসসালামু আলাইকুম, আমি আপনার ওয়েবসাইট থেকে এই প্রোডাক্টটি অর্ডার করেছি।\n\nঅর্ডার আইডি: #${orderId}\nপ্রোডাক্ট: ${product.name}\nমূল্য: ৳${product.price}\n\nকাস্টমার তথ্য:\nনাম: ${customerInfo.name}\nমোবাইল: ${customerInfo.phone}\nঠিকানা: ${customerInfo.address}`;
     const whatsappUrl = `https://wa.me/8801886836315?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -144,69 +194,100 @@ export const ProductDetails: React.FC = () => {
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50 rounded-full -ml-32 -mb-32 opacity-50" />
           
           <div className="relative z-10">
-            <div className="text-center mb-12">
-              <div className="inline-block px-4 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest mb-4">অর্ডার ফর্ম</div>
-              <h2 className="text-3xl md:text-5xl font-black text-zinc-900 mb-6">অর্ডার করতে নিচের ফর্মটি পূরণ করুন</h2>
-              <p className="text-zinc-500 text-lg font-medium">আপনার সঠিক তথ্য দিয়ে আমাদের সহায়তা করুন</p>
-            </div>
-
-            <form className="space-y-8" onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const name = formData.get('name');
-              const phone = formData.get('phone');
-              const address = formData.get('address');
-              
-              const message = `আসসালামু আলাইকুম, আমি আপনার ওয়েবসাইট থেকে এই প্রোডাক্টটি অর্ডার করতে চাই।\n\nপ্রোডাক্ট: ${product.name}\nমূল্য: ৳${product.price}\n\nকাস্টমার তথ্য:\nনাম: ${name}\nমোবাইল: ${phone}\nঠিকানা: ${address}`;
-              const whatsappUrl = `https://wa.me/8801886836315?text=${encodeURIComponent(message)}`;
-              window.open(whatsappUrl, '_blank');
-            }}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <label className="text-sm font-black text-zinc-900 uppercase tracking-wider ml-1">আপনার নাম</label>
-                  <input 
-                    name="name"
-                    required
-                    type="text" 
-                    placeholder="আপনার নাম লিখুন" 
-                    className="w-full px-8 py-5 bg-zinc-50 border-2 border-zinc-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg font-medium"
-                  />
+            {!orderConfirmed ? (
+              <>
+                <div className="text-center mb-12">
+                  <div className="inline-block px-4 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest mb-4">অর্ডার ফর্ম</div>
+                  <h2 className="text-3xl md:text-5xl font-black text-zinc-900 mb-6">অর্ডার করতে নিচের ফর্মটি পূরণ করুন</h2>
+                  <p className="text-zinc-500 text-lg font-medium">আপনার সঠিক তথ্য দিয়ে আমাদের সহায়তা করুন</p>
                 </div>
 
-                <div className="space-y-3">
-                  <label className="text-sm font-black text-zinc-900 uppercase tracking-wider ml-1">মোবাইল নম্বর</label>
-                  <input 
-                    name="phone"
-                    required
-                    type="tel" 
-                    placeholder="আপনার মোবাইল নম্বর লিখুন" 
-                    className="w-full px-8 py-5 bg-zinc-50 border-2 border-zinc-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg font-medium"
-                  />
+                <form className="space-y-8" onSubmit={handleFormSubmit}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-3">
+                      <label className="text-sm font-black text-zinc-900 uppercase tracking-wider ml-1">আপনার নাম</label>
+                      <input 
+                        name="name"
+                        required
+                        type="text" 
+                        placeholder="আপনার নাম লিখুন" 
+                        value={customerInfo.name}
+                        onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                        className="w-full px-8 py-5 bg-zinc-50 border-2 border-zinc-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg font-medium"
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-sm font-black text-zinc-900 uppercase tracking-wider ml-1">মোবাইল নম্বর</label>
+                      <input 
+                        name="phone"
+                        required
+                        type="tel" 
+                        placeholder="আপনার মোবাইল নম্বর লিখুন" 
+                        value={customerInfo.phone}
+                        onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
+                        className="w-full px-8 py-5 bg-zinc-50 border-2 border-zinc-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg font-medium"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-sm font-black text-zinc-900 uppercase tracking-wider ml-1">সম্পূর্ণ ঠিকানা</label>
+                    <textarea 
+                      name="address"
+                      required
+                      rows={4}
+                      placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন (গ্রাম/শহর, থানা, জেলা)" 
+                      value={customerInfo.address}
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })}
+                      className="w-full px-8 py-5 bg-zinc-50 border-2 border-zinc-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg font-medium resize-none"
+                    ></textarea>
+                  </div>
+
+                  <div className="pt-4">
+                    <button 
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full py-6 bg-emerald-600 text-white rounded-2xl font-black text-2xl hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-600/30 flex items-center justify-center space-x-4 group disabled:bg-zinc-300 disabled:cursor-not-allowed"
+                    >
+                      <span>{submitting ? 'অর্ডার প্রসেসিং হচ্ছে...' : 'অর্ডার কনফার্ম করুন'}</span>
+                      {!submitting && <ArrowLeft className="rotate-180 group-hover:translate-x-2 transition-transform" size={28} />}
+                    </button>
+                    <p className="text-center text-zinc-400 text-sm mt-6 font-medium">অর্ডার কনফার্ম করলে আপনার তথ্য আমাদের কাছে জমা হবে</p>
+                  </div>
+                </form>
+              </>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-10"
+              >
+                <div className="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8 border border-emerald-100 shadow-lg shadow-emerald-600/10">
+                  <CheckCircle2 size={48} />
                 </div>
-              </div>
-
-              <div className="space-y-3">
-                <label className="text-sm font-black text-zinc-900 uppercase tracking-wider ml-1">সম্পূর্ণ ঠিকানা</label>
-                <textarea 
-                  name="address"
-                  required
-                  rows={4}
-                  placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন (গ্রাম/শহর, থানা, জেলা)" 
-                  className="w-full px-8 py-5 bg-zinc-50 border-2 border-zinc-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-lg font-medium resize-none"
-                ></textarea>
-              </div>
-
-              <div className="pt-4">
+                <h2 className="text-4xl font-black text-zinc-900 mb-4">অর্ডার সফল হয়েছে!</h2>
+                <p className="text-zinc-500 text-xl font-medium mb-2">অর্ডার আইডি: <span className="text-emerald-600 font-black">#{orderId}</span></p>
+                <p className="text-zinc-500 mb-12 max-w-md mx-auto text-lg">
+                  আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। দ্রুত কনফার্মেশনের জন্য নিচের বাটনে ক্লিক করে হোয়াটসঅ্যাপে মেসেজ দিন।
+                </p>
+                
                 <button 
-                  type="submit"
+                  onClick={handleWhatsAppRedirect}
                   className="w-full py-6 bg-emerald-600 text-white rounded-2xl font-black text-2xl hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-600/30 flex items-center justify-center space-x-4 group"
                 >
-                  <span>অর্ডার কনফার্ম করুন</span>
-                  <ArrowLeft className="rotate-180 group-hover:translate-x-2 transition-transform" size={28} />
+                  <MessageCircle size={28} />
+                  <span>হোয়াটসঅ্যাপে মেসেজ দিন</span>
                 </button>
-                <p className="text-center text-zinc-400 text-sm mt-6 font-medium">অর্ডার কনফার্ম করলে আপনাকে সরাসরি হোয়াটসঅ্যাপে নিয়ে যাওয়া হবে</p>
-              </div>
-            </form>
+                
+                <button 
+                  onClick={() => setOrderConfirmed(false)}
+                  className="mt-6 text-zinc-400 font-bold hover:text-zinc-600 transition-colors"
+                >
+                  নতুন অর্ডার করুন
+                </button>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>

@@ -87,7 +87,7 @@ export const Home: React.FC = () => {
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="text-zinc-500 text-xl mb-12 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium"
               >
-                সালামিফাই (Salamify) আপনার জন্য নিয়ে এসেছে সেরা মানের পণ্য যা আধুনিক জীবনযাত্রার সাথে মানানসই এবং আরামদায়ক।
+                Salamify আপনার জন্য নিয়ে এসেছে সেরা মানের পণ্য যা আধুনিক জীবনযাত্রার সাথে মানানসই এবং আরামদায়ক।
               </motion.p>
               
               <motion.div 
