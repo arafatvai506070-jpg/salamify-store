@@ -77,8 +77,8 @@ export const Home: React.FC = () => {
                 transition={{ delay: 0.1, duration: 0.6 }}
                 className="text-6xl md:text-8xl font-black text-zinc-900 leading-[0.95] mb-8 font-display tracking-tight"
               >
-                সেরা মানের পণ্য <br />
-                <span className="text-emerald-600">আপনার ঘরের জন্য</span>
+                প্রিমিয়াম পোশাক এর <br />
+                <span className="text-emerald-600">বিশ্বস্ত মাধ্যম।</span>
               </motion.h1>
               
               <motion.p 
