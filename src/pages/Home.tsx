@@ -39,6 +39,13 @@ export const Home: React.FC = () => {
     }
   };
 
+  const scrollToProducts = () => {
+    const productsSection = document.getElementById('products-grid');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -48,102 +55,118 @@ export const Home: React.FC = () => {
   }
 
   return (
-    <div className="bg-[#f8f9fa]">
+    <div className="bg-[#fcfcfc]">
       {/* Hero Section */}
       <section className="relative bg-white overflow-hidden border-b border-zinc-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between py-16 lg:py-24 gap-12">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-emerald-50/30 -skew-x-12 translate-x-1/4 z-0" />
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between py-20 lg:py-32 gap-16">
             <div className="lg:w-1/2 text-center lg:text-left">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center space-x-2 px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full mb-6"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="inline-flex items-center space-x-2 px-4 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-black uppercase tracking-[0.2em] rounded-full mb-8 border border-emerald-100"
               >
                 <Star size={14} className="fill-emerald-700" />
-                <span>Premium Quality Guaranteed</span>
+                <span>১০০% প্রিমিয়াম কোয়ালিটি গ্যারান্টি</span>
               </motion.div>
               
               <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="text-5xl md:text-7xl font-black text-zinc-900 leading-[1.1] mb-6 font-display"
+                transition={{ delay: 0.1, duration: 0.6 }}
+                className="text-6xl md:text-8xl font-black text-zinc-900 leading-[0.95] mb-8 font-display tracking-tight"
               >
-                Quality Products <br />
-                <span className="text-emerald-600">For Your Home</span>
+                সেরা মানের পণ্য <br />
+                <span className="text-emerald-600">আপনার ঘরের জন্য</span>
               </motion.h1>
               
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-zinc-500 text-lg mb-10 max-w-lg mx-auto lg:mx-0 leading-relaxed"
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="text-zinc-500 text-xl mb-12 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium"
               >
-                সালামিফাই (Salamify) brings you the finest quality products that blend minimalism with ultimate comfort. Crafted for the modern lifestyle.
+                সালামিফাই (Salamify) আপনার জন্য নিয়ে এসেছে সেরা মানের পণ্য যা আধুনিক জীবনযাত্রার সাথে মানানসই এবং আরামদায়ক।
               </motion.p>
               
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+                transition={{ delay: 0.3, duration: 0.6 }}
+                className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start"
               >
-                <button className="px-10 py-4 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2">
-                  <span>Shop Now</span>
-                  <ArrowRight size={18} />
+                <button 
+                  onClick={scrollToProducts}
+                  className="px-12 py-5 bg-emerald-600 text-white rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-600/30 flex items-center justify-center space-x-3 hover:-translate-y-1"
+                >
+                  <span>এখনই কিনুন</span>
+                  <ArrowRight size={22} />
                 </button>
-                <button className="px-10 py-4 bg-white text-zinc-900 border border-zinc-200 rounded-xl font-bold text-sm hover:bg-zinc-50 transition-all flex items-center justify-center space-x-2">
-                  <span>View Categories</span>
+                <button 
+                  onClick={scrollToProducts}
+                  className="px-12 py-5 bg-white text-zinc-900 border-2 border-zinc-100 rounded-2xl font-black text-lg hover:bg-zinc-50 transition-all flex items-center justify-center space-x-3 hover:-translate-y-1 shadow-lg shadow-zinc-100"
+                >
+                  <span>ক্যাটাগরি দেখুন</span>
                 </button>
               </motion.div>
             </div>
             
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
+              initial={{ opacity: 0, scale: 0.9, x: 50 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 1, ease: "easeOut" }}
               className="lg:w-1/2 relative"
             >
-              <div className="absolute -inset-4 bg-emerald-100 blur-3xl rounded-full opacity-30"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=2070&auto=format&fit=crop" 
-                alt="Premium Apparel" 
-                className="relative w-full h-[500px] object-cover rounded-[2rem] shadow-2xl border-4 border-white"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute -bottom-6 -left-6 bg-white p-6 rounded-2xl shadow-xl border border-zinc-100 hidden md:block">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center text-white">
-                    <ShoppingBag size={24} />
+              <div className="absolute -inset-10 bg-emerald-200 blur-[100px] rounded-full opacity-20 animate-pulse"></div>
+              <div className="relative rounded-[3rem] overflow-hidden border-[12px] border-white shadow-[0_40px_80px_-15px_rgba(0,0,0,0.2)]">
+                <img 
+                  src="https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=2070&auto=format&fit=crop" 
+                  alt="Premium Apparel" 
+                  className="w-full h-[600px] object-cover hover:scale-110 transition-transform duration-[2s]"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl border border-zinc-50 hidden md:block"
+              >
+                <div className="flex items-center space-x-5">
+                  <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-600/30">
+                    <ShoppingBag size={32} />
                   </div>
                   <div>
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider">New Arrivals</p>
-                    <p className="text-lg font-black text-zinc-900">Premium Collection</p>
+                    <p className="text-xs text-emerald-600 font-black uppercase tracking-[0.2em] mb-1">নতুন কালেকশন</p>
+                    <p className="text-2xl font-black text-zinc-900">প্রিমিয়াম কোয়ালিটি</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div id="products-grid" className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-24">
         {/* Category Filter */}
-        <header className="mb-12 text-center">
-          <h2 className="text-3xl font-black text-zinc-900 mb-4 font-display">Our Products</h2>
-          <div className="flex flex-wrap justify-center gap-3">
+        <header className="mb-16 text-center">
+          <div className="inline-block px-4 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-4">শপ</div>
+          <h2 className="text-4xl md:text-6xl font-black text-zinc-900 mb-8 font-display">আমাদের কালেকশন</h2>
+          <div className="flex flex-wrap justify-center gap-4">
             {categories.map(category => (
               <button
                 key={category}
                 onClick={() => handleCategoryChange(category)}
                 className={cn(
-                  "px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-200 border",
+                  "px-8 py-4 rounded-2xl text-sm font-black transition-all duration-300 border-2",
                   activeCategory === category 
-                    ? "bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-600/20" 
-                    : "bg-white text-zinc-600 border-zinc-200 hover:border-emerald-600 hover:text-emerald-600"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-xl shadow-emerald-600/20 -translate-y-1" 
+                    : "bg-white text-zinc-500 border-zinc-100 hover:border-emerald-600 hover:text-emerald-600 hover:shadow-lg"
                 )}
               >
-                {category}
+                {category === 'All' ? 'সব প্রোডাক্ট' : category}
               </button>
             ))}
           </div>
@@ -158,7 +181,7 @@ export const Home: React.FC = () => {
         
         {filteredProducts.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-zinc-500 text-lg">No products found in this category.</p>
+            <p className="text-zinc-500 text-lg">এই ক্যাটাগরিতে কোনো প্রোডাক্ট পাওয়া যায়নি।</p>
           </div>
         )}
       </div>

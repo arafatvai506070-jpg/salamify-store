@@ -15,7 +15,7 @@ export default function App() {
       <Router>
         <div className="min-h-screen bg-[#f8f9fa] font-sans text-zinc-900 selection:bg-emerald-500/30 selection:text-emerald-900">
           <Navbar />
-          <main>
+          <main className="max-w-[1400px] mx-auto">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/product/:id" element={<ProductDetails />} />
@@ -27,7 +27,7 @@ export default function App() {
           </main>
           
           <footer className="bg-white border-t border-zinc-200 pt-16 pb-8 mt-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
               {/* Trust Badges */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16 border-b border-zinc-100 pb-16">
                 <div className="flex items-center space-x-4">
@@ -35,8 +35,8 @@ export default function App() {
                     <Truck size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-900">Fast Delivery</h4>
-                    <p className="text-sm text-zinc-500">Quick shipping to your doorstep</p>
+                    <h4 className="font-bold text-zinc-900">ফাস্ট ডেলিভারি</h4>
+                    <p className="text-sm text-zinc-500">দ্রুত আপনার দোরগোড়ায় পৌঁছাবে</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -44,8 +44,8 @@ export default function App() {
                     <ShieldCheck size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-900">Quality Guaranteed</h4>
-                    <p className="text-sm text-zinc-500">100% authentic premium products</p>
+                    <h4 className="font-bold text-zinc-900">কোয়ালিটি গ্যারান্টি</h4>
+                    <p className="text-sm text-zinc-500">১০০% অথেন্টিক প্রিমিয়াম পণ্য</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -53,8 +53,8 @@ export default function App() {
                     <RotateCcw size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-zinc-900">Easy Return</h4>
-                    <p className="text-sm text-zinc-500">7 days hassle-free return policy</p>
+                    <h4 className="font-bold text-zinc-900">সহজ রিটার্ন</h4>
+                    <p className="text-sm text-zinc-500">৭ দিনের সহজ রিটার্ন পলিসি</p>
                   </div>
                 </div>
               </div>
@@ -67,36 +67,36 @@ export default function App() {
                     </div>
                     <h2 className="text-xl font-black tracking-tighter text-zinc-900 font-display">Salamify<span className="text-emerald-500">.</span></h2>
                   </div>
-                  <p className="text-zinc-500 max-w-xs">Your trusted partner for premium quality products. We bring the best to your home.</p>
+                  <p className="text-zinc-500 max-w-xs">প্রিমিয়াম কোয়ালিটি পণ্যের জন্য আপনার বিশ্বস্ত সঙ্গী। আমরা আপনার ঘরে সেরা পণ্যটি পৌঁছে দেই।</p>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4 text-zinc-900">Shop</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4 text-zinc-900">শপ</h3>
                   <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><Link to="/" className="hover:text-emerald-600 transition-colors">All Products</Link></li>
-                    <li><Link to="/" className="hover:text-emerald-600 transition-colors">New Arrivals</Link></li>
-                    <li><Link to="/" className="hover:text-emerald-600 transition-colors">Best Sellers</Link></li>
+                    <li><Link to="/" className="hover:text-emerald-600 transition-colors">সব প্রোডাক্ট</Link></li>
+                    <li><Link to="/" className="hover:text-emerald-600 transition-colors">নতুন কালেকশন</Link></li>
+                    <li><Link to="/" className="hover:text-emerald-600 transition-colors">বেস্ট সেলার</Link></li>
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4 text-zinc-900">Support</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4 text-zinc-900">সাপোর্ট</h3>
                   <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><a href="#" className="hover:text-emerald-600 transition-colors">Shipping Policy</a></li>
-                    <li><a href="#" className="hover:text-emerald-600 transition-colors">Returns & Exchanges</a></li>
-                    <li><a href="#" className="hover:text-emerald-600 transition-colors">Contact Us</a></li>
+                    <li><a href="#" className="hover:text-emerald-600 transition-colors">শিপিং পলিসি</a></li>
+                    <li><a href="#" className="hover:text-emerald-600 transition-colors">রিটার্ন ও এক্সচেঞ্জ</a></li>
+                    <li><a href="#" className="hover:text-emerald-600 transition-colors">যোগাযোগ করুন</a></li>
                   </ul>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4 text-zinc-900">Admin</h3>
+                  <h3 className="text-sm font-bold uppercase tracking-widest mb-4 text-zinc-900">অ্যাডমিন</h3>
                   <ul className="space-y-2 text-sm text-zinc-500">
-                    <li><Link to="/admin-portal" className="hover:text-emerald-600 transition-colors">Admin Portal</Link></li>
+                    <li><Link to="/admin-portal" className="hover:text-emerald-600 transition-colors">অ্যাডমিন পোর্টাল</Link></li>
                   </ul>
                 </div>
               </div>
               <div className="mt-12 pt-8 border-t border-zinc-100 flex flex-col md:flex-row justify-between items-center text-xs text-zinc-500">
-                <p>© 2026 Salamify. All rights reserved.</p>
+                <p>© ২০২৬ Salamify. সর্বস্বত্ব সংরক্ষিত।</p>
                 <div className="flex space-x-6 mt-4 md:mt-0">
-                  <a href="#" className="hover:text-emerald-600 transition-colors">Privacy Policy</a>
-                  <a href="#" className="hover:text-emerald-600 transition-colors">Terms of Service</a>
+                  <a href="#" className="hover:text-emerald-600 transition-colors">প্রাইভেসি পলিসি</a>
+                  <a href="#" className="hover:text-emerald-600 transition-colors">টার্মস অফ সার্ভিস</a>
                 </div>
               </div>
             </div>

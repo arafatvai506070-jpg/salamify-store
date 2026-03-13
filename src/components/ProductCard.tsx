@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ShoppingCart, MessageCircle } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Zap, ArrowRight } from 'lucide-react';
 import { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
@@ -15,64 +15,75 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const handleWhatsAppOrder = (e: React.MouseEvent) => {
     e.preventDefault();
-    const message = `Hello, I want to order: ${product.name}\nPrice: ৳${product.price}\nLink: ${window.location.origin}/product/${product.id}`;
-    const whatsappUrl = `https://wa.me/8801700000000?text=${encodeURIComponent(message)}`;
+    const message = `আসসালামু আলাইকুম, আমি আপনার ওয়েবসাইট থেকে এই প্রোডাক্টটি কিনতে চাই।\n\nপ্রোডাক্ট: ${product.name}\nমূল্য: ৳${product.price}\nলিঙ্ক: ${window.location.origin}/product/${product.id}`;
+    const whatsappUrl = `https://wa.me/8801886836315?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   return (
-    <motion.div
+    <motion.div 
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group bg-white rounded-xl overflow-hidden border border-zinc-200 hover:shadow-xl hover:shadow-zinc-200/50 transition-all duration-300 flex flex-col h-full"
+      className="group bg-white rounded-[32px] overflow-hidden border border-zinc-100 hover:border-emerald-500/30 transition-all duration-500 hover:shadow-[0_20px_40px_-15px_rgba(16,185,129,0.15)] flex flex-col h-full relative"
     >
-      <Link to={`/product/${product.id}`} className="block aspect-square overflow-hidden bg-zinc-50 relative">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      <Link to={`/product/${product.id}`} className="block relative aspect-[4/5] overflow-hidden bg-zinc-50">
+        <img 
+          src={product.image} 
+          alt={product.name} 
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           referrerPolicy="no-referrer"
         />
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-500" />
+        
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
-            <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Out of Stock</span>
+          <div className="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+            স্টক আউট
           </div>
         )}
+        
+        <div className="absolute top-4 left-4">
+          <div className="px-3 py-1 bg-white/90 backdrop-blur-sm text-zinc-900 text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm border border-zinc-100 flex items-center gap-1">
+            <Zap size={10} className="fill-emerald-500 text-emerald-500" />
+            {product.category}
+          </div>
+        </div>
       </Link>
-      
-      <div className="p-4 flex flex-col flex-grow">
-        <div className="mb-2">
-          <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">{product.category}</p>
-          <Link to={`/product/${product.id}`}>
-            <h3 className="text-sm font-semibold text-zinc-900 line-clamp-2 hover:text-emerald-600 transition-colors h-10">
-              {product.name}
-            </h3>
-          </Link>
+
+      <div className="p-6 flex flex-col flex-grow">
+        <Link to={`/product/${product.id}`} className="block mb-2">
+          <h3 className="text-xl font-black text-zinc-900 group-hover:text-emerald-600 transition-colors line-clamp-1">{product.name}</h3>
+        </Link>
+        
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-2xl font-black text-emerald-600">৳{product.price.toFixed(0)}</span>
+          <span className="text-xs text-zinc-400 line-through font-bold">৳{(product.price * 1.2).toFixed(0)}</span>
         </div>
 
-        <div className="mt-auto">
-          <div className="flex items-baseline gap-1 mb-4">
-            <span className="text-lg font-bold text-zinc-900">৳{product.price.toFixed(0)}</span>
-            {/* Optional: Add a strike-through price if you have one */}
-          </div>
+        <div className="mt-auto space-y-3">
+          <Link 
+            to={`/product/${product.id}`}
+            className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 group/btn"
+          >
+            <span>অর্ডার করুন</span>
+            <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
+          </Link>
           
-          <div className="grid grid-cols-1 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => addToCart(product)}
               disabled={product.stock === 0}
-              className="w-full flex items-center justify-center space-x-2 py-2 bg-zinc-900 text-white rounded-lg text-xs font-bold hover:bg-zinc-800 disabled:bg-zinc-300 disabled:cursor-not-allowed transition-all duration-300"
+              className="py-3 bg-zinc-100 text-zinc-900 rounded-xl font-bold text-xs hover:bg-zinc-200 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
             >
-              <ShoppingCart size={14} />
-              <span>Add to Cart</span>
+              <ShoppingBag size={14} />
+              কার্ট
             </button>
-            
             <button
               onClick={handleWhatsAppOrder}
-              className="w-full flex items-center justify-center space-x-2 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 transition-all duration-300"
+              className="py-3 bg-emerald-50 text-emerald-600 rounded-xl font-bold text-xs hover:bg-emerald-100 transition-all flex items-center justify-center gap-2 border border-emerald-100"
             >
               <MessageCircle size={14} />
-              <span>Order on WhatsApp</span>
+              হোয়াটসঅ্যাপ
             </button>
           </div>
         </div>

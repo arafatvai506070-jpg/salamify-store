@@ -9,7 +9,7 @@ export const Navbar: React.FC = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-zinc-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2 group">
@@ -28,10 +28,10 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-10">
-            <Link to="/" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">Home</Link>
-            <Link to="/" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">Shop</Link>
-            <Link to="/" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">Categories</Link>
-            <Link to="/admin-portal" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">Admin</Link>
+            <Link to="/" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">হোম</Link>
+            <Link to="/" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">শপ</Link>
+            <Link to="/" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">ক্যাটাগরি</Link>
+            <Link to="/admin-portal" className="text-sm font-semibold text-zinc-600 hover:text-emerald-600 transition-colors">অ্যাডমিন</Link>
           </div>
 
           <div className="flex items-center space-x-4">

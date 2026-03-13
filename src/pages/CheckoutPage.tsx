@@ -35,13 +35,13 @@ export const CheckoutPage: React.FC = () => {
 
   if (cart.length === 0 && step !== 'confirmation') {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+      <div className="max-w-[1400px] mx-auto px-4 py-20 text-center">
         <div className="w-20 h-20 bg-zinc-100 rounded-full flex items-center justify-center mx-auto mb-6">
           <ShoppingBag className="text-zinc-400" size={32} />
         </div>
-        <h1 className="text-2xl font-bold text-zinc-900 mb-4">Your bag is empty</h1>
+        <h1 className="text-2xl font-bold text-zinc-900 mb-4">আপনার ব্যাগ খালি</h1>
         <Link to="/" className="inline-block px-8 py-3 bg-zinc-900 text-white rounded-xl font-bold hover:bg-zinc-800 transition-colors shadow-lg shadow-zinc-200">
-          Start Shopping
+          শপিং শুরু করুন
         </Link>
       </div>
     );
@@ -77,14 +77,14 @@ export const CheckoutPage: React.FC = () => {
   };
 
   const steps = [
-    { id: 'shipping', label: 'Shipping', icon: MapPin },
-    { id: 'payment', label: 'Payment', icon: CreditCard },
-    { id: 'confirmation', label: 'Success', icon: CheckCircle2 },
+    { id: 'shipping', label: 'শিপিং', icon: MapPin },
+    { id: 'payment', label: 'পেমেন্ট', icon: CreditCard },
+    { id: 'confirmation', label: 'সফল', icon: CheckCircle2 },
   ];
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Progress Bar */}
         <div className="max-w-3xl mx-auto mb-12">
           <div className="flex items-center justify-between relative">
@@ -134,19 +134,19 @@ export const CheckoutPage: React.FC = () => {
                 >
                   <h2 className="text-2xl font-bold text-zinc-900 mb-8 flex items-center gap-3">
                     <MapPin className="text-emerald-600" />
-                    Shipping Information
+                    শিপিং তথ্য
                   </h2>
                   
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Full Name</label>
+                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">আপনার নাম</label>
                         <div className="relative">
                           <User className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                           <input
                             required
                             type="text"
-                            placeholder="John Doe"
+                            placeholder="আপনার নাম লিখুন"
                             className="w-full pl-12 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                             value={formData.name}
                             onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -154,13 +154,13 @@ export const CheckoutPage: React.FC = () => {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Phone Number</label>
+                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">মোবাইল নম্বর</label>
                         <div className="relative">
                           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                           <input
                             required
                             type="tel"
-                            placeholder="017XXXXXXXX"
+                            placeholder="আপনার মোবাইল নম্বর লিখুন"
                             className="w-full pl-12 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                             value={formData.phone}
                             onChange={e => setFormData({ ...formData, phone: e.target.value })}
@@ -170,13 +170,13 @@ export const CheckoutPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Email Address</label>
+                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">ইমেইল অ্যাড্রেস</label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                         <input
                           required
                           type="email"
-                          placeholder="email@example.com"
+                          placeholder="আপনার ইমেইল লিখুন"
                           className="w-full pl-12 pr-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                           value={formData.email}
                           onChange={e => setFormData({ ...formData, email: e.target.value })}
@@ -186,22 +186,22 @@ export const CheckoutPage: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">City / District</label>
+                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">শহর / জেলা</label>
                         <input
                           required
                           type="text"
-                          placeholder="e.g. Dhaka"
+                          placeholder="যেমন: ঢাকা"
                           className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                           value={formData.city}
                           onChange={e => setFormData({ ...formData, city: e.target.value })}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Area / Thana</label>
+                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">এলাকা / থানা</label>
                         <input
                           required
                           type="text"
-                          placeholder="e.g. Uttara"
+                          placeholder="যেমন: উত্তরা"
                           className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                           value={formData.area}
                           onChange={e => setFormData({ ...formData, area: e.target.value })}
@@ -210,11 +210,11 @@ export const CheckoutPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Detailed Address</label>
+                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">সম্পূর্ণ ঠিকানা</label>
                       <textarea
                           required
                           rows={3}
-                          placeholder="House no, Road no, Landmark..."
+                          placeholder="গ্রাম/শহর, রাস্তা নম্বর, ল্যান্ডমার্ক..."
                           className="w-full px-4 py-3 bg-zinc-50 border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                           value={formData.address}
                           onChange={e => setFormData({ ...formData, address: e.target.value })}
@@ -227,12 +227,12 @@ export const CheckoutPage: React.FC = () => {
                           if (formData.name && formData.phone && formData.city && formData.address) {
                             setStep('payment');
                           } else {
-                            alert('Please fill in all required fields');
+                            alert('দয়া করে সব প্রয়োজনীয় ঘরগুলো পূরণ করুন');
                           }
                         }}
                         className="w-full py-4 bg-zinc-900 text-white rounded-xl font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-zinc-200"
                       >
-                        Continue to Payment
+                        পেমেন্টে এগিয়ে যান
                         <ArrowRight size={20} />
                       </button>
                     </div>
@@ -250,15 +250,15 @@ export const CheckoutPage: React.FC = () => {
                 >
                   <h2 className="text-2xl font-bold text-zinc-900 mb-8 flex items-center gap-3">
                     <CreditCard className="text-emerald-600" />
-                    Payment Method
+                    পেমেন্ট পদ্ধতি
                   </h2>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     {[
-                      { id: 'cod', label: 'Cash on Delivery', icon: Truck, description: 'Pay when you receive' },
-                      { id: 'bkash', label: 'bKash', icon: Smartphone, description: '017XXXXXXXX' },
-                      { id: 'nagad', label: 'Nagad', icon: Smartphone, description: '017XXXXXXXX' },
-                      { id: 'rocket', label: 'Rocket', icon: Smartphone, description: '017XXXXXXXX' },
+                      { id: 'cod', label: 'ক্যাশ অন ডেলিভারি', icon: Truck, description: 'পণ্য হাতে পেয়ে টাকা দিন' },
+                      { id: 'bkash', label: 'বিকাশ', icon: Smartphone, description: '০১৮৮৬৮৩৬৩১৫' },
+                      { id: 'nagad', label: 'নগদ', icon: Smartphone, description: '০১৮৮৬৮৩৬৩১৫' },
+                      { id: 'rocket', label: 'রকেট', icon: Smartphone, description: '০১৮৮৬৮৩৬৩১৫' },
                     ].map((m) => (
                       <button
                         key={m.id}
@@ -287,13 +287,13 @@ export const CheckoutPage: React.FC = () => {
                       className="mb-8 p-6 bg-zinc-50 rounded-2xl border border-zinc-200"
                     >
                       <p className="text-sm text-zinc-600 mb-4">
-                        Please send the total amount to our {paymentData.method} number and provide the Transaction ID below.
+                        দয়া করে আমাদের {paymentData.method} নম্বরে মোট টাকা পাঠিয়ে নিচের ঘরে ট্রানজেকশন আইডি (Transaction ID) দিন।
                       </p>
-                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Transaction ID</label>
+                      <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">ট্রানজেকশন আইডি</label>
                       <input
                         required
                         type="text"
-                        placeholder="e.g. 8N7X6W5V"
+                        placeholder="যেমন: 8N7X6W5V"
                         className="w-full px-4 py-3 bg-white border border-zinc-200 rounded-xl text-zinc-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
                         value={paymentData.transactionId}
                         onChange={e => setPaymentData({ ...paymentData, transactionId: e.target.value })}
@@ -307,14 +307,14 @@ export const CheckoutPage: React.FC = () => {
                       className="flex-1 py-4 bg-zinc-100 text-zinc-600 rounded-xl font-bold hover:bg-zinc-200 transition-all flex items-center justify-center gap-2"
                     >
                       <ArrowLeft size={20} />
-                      Back
+                      পিছনে
                     </button>
                     <button
                       disabled={loading || (paymentData.method !== 'cod' && !paymentData.transactionId)}
                       onClick={handlePlaceOrder}
                       className="flex-[2] py-4 bg-zinc-900 text-white rounded-xl font-bold hover:bg-zinc-800 transition-all flex items-center justify-center gap-2 shadow-lg shadow-zinc-200 disabled:opacity-50"
                     >
-                      {loading ? 'Processing...' : 'Place Order'}
+                      {loading ? 'প্রসেসিং...' : 'অর্ডার সম্পন্ন করুন'}
                       <ArrowRight size={20} />
                     </button>
                   </div>
@@ -331,18 +331,18 @@ export const CheckoutPage: React.FC = () => {
                   <div className="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8 border border-emerald-100">
                     <CheckCircle2 size={48} />
                   </div>
-                  <h2 className="text-3xl font-bold text-zinc-900 mb-4">Order Confirmed!</h2>
-                  <p className="text-zinc-500 mb-2">Order ID: <span className="text-zinc-900 font-bold">#{orderId}</span></p>
+                  <h2 className="text-3xl font-bold text-zinc-900 mb-4">অর্ডার সফল হয়েছে!</h2>
+                  <p className="text-zinc-500 mb-2">অর্ডার আইডি: <span className="text-zinc-900 font-bold">#{orderId}</span></p>
                   <p className="text-zinc-500 mb-10 max-w-md mx-auto">
-                    Thank you for your purchase. We've received your order and will notify you when it ships.
+                    আপনার কেনাকাটার জন্য ধন্যবাদ। আমরা আপনার অর্ডারটি পেয়েছি এবং শিপিংয়ের সময় আপনাকে জানানো হবে।
                   </p>
                   
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <Link to="/profile" className="w-full sm:w-auto px-8 py-4 bg-zinc-100 text-zinc-900 rounded-xl font-bold hover:bg-zinc-200 transition-all border border-zinc-200">
-                      Track Order
+                      অর্ডার ট্র্যাক করুন
                     </Link>
                     <Link to="/" className="w-full sm:w-auto px-8 py-4 bg-zinc-900 text-white rounded-xl font-bold hover:bg-zinc-800 transition-all shadow-lg shadow-zinc-200">
-                      Continue Shopping
+                      শপিং চালিয়ে যান
                     </Link>
                   </div>
                 </motion.div>
@@ -354,7 +354,7 @@ export const CheckoutPage: React.FC = () => {
             <div className="bg-zinc-50 border border-zinc-200 rounded-3xl p-8 sticky top-24">
               <h3 className="text-lg font-bold text-zinc-900 mb-6 flex items-center gap-2">
                 <ShoppingBag size={20} className="text-emerald-600" />
-                Order Summary
+                অর্ডার সামারি
               </h3>
               
               <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
@@ -365,7 +365,7 @@ export const CheckoutPage: React.FC = () => {
                     </div>
                     <div className="flex-grow">
                       <h4 className="text-sm font-bold text-zinc-900 line-clamp-1">{item.name}</h4>
-                      <p className="text-xs text-zinc-500">Qty: {item.quantity} × ৳{item.price}</p>
+                      <p className="text-xs text-zinc-500">পরিমাণ: {item.quantity} × ৳{item.price}</p>
                     </div>
                     <p className="text-sm font-bold text-zinc-900">৳{item.price * item.quantity}</p>
                   </div>
@@ -374,15 +374,15 @@ export const CheckoutPage: React.FC = () => {
 
               <div className="space-y-3 pt-6 border-t border-zinc-200">
                 <div className="flex justify-between text-sm text-zinc-600">
-                  <span className="font-medium">Subtotal</span>
+                  <span className="font-medium">সাবটোটাল</span>
                   <span className="font-bold">৳{total}</span>
                 </div>
                 <div className="flex justify-between text-sm text-zinc-600">
-                  <span className="font-medium">Shipping</span>
-                  <span className="text-emerald-600 font-bold">Free</span>
+                  <span className="font-medium">শিপিং</span>
+                  <span className="text-emerald-600 font-bold">ফ্রি</span>
                 </div>
                 <div className="flex justify-between text-lg font-bold text-zinc-900 pt-3 border-t border-zinc-200">
-                  <span>Total</span>
+                  <span>মোট</span>
                   <span>৳{total}</span>
                 </div>
               </div>
