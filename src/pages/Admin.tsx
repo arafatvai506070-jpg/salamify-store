@@ -119,12 +119,20 @@ export const Admin: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
-      const token = localStorage.getItem('admin_token');
-      await fetch(`/api/products/${id}`, { 
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      fetchProducts();
+      try {
+        const token = localStorage.getItem('admin_token');
+        const res = await fetch(`/api/products/${id}`, { 
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.error || 'Failed to delete product');
+        }
+        fetchProducts();
+      } catch (err: any) {
+        alert(`Error: ${err.message}`);
+      }
     }
   };
 
@@ -135,47 +143,71 @@ export const Admin: React.FC = () => {
 
   const handleUpdate = async () => {
     if (!editingId) return;
-    const token = localStorage.getItem('admin_token');
-    await fetch(`/api/products/${editingId}`, {
-      method: 'PUT',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(editForm)
-    });
-    setEditingId(null);
-    fetchProducts();
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch(`/api/products/${editingId}`, {
+        method: 'PUT',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editForm)
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update product');
+      }
+      setEditingId(null);
+      fetchProducts();
+    } catch (err: any) {
+      alert(`Error: ${err.message}`);
+    }
   };
 
   const handleUpdateOrderStatus = async (orderId: number, status: string) => {
-    const token = localStorage.getItem('admin_token');
-    await fetch(`/api/admin/orders/${orderId}`, {
-      method: 'PATCH',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ status })
-    });
-    fetchOrders();
-    fetchAnalytics();
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ status })
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to update order status');
+      }
+      fetchOrders();
+      fetchAnalytics();
+    } catch (err: any) {
+      alert(`Error: ${err.message}`);
+    }
   };
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    const token = localStorage.getItem('admin_token');
-    await fetch('/api/products', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(newProduct)
-    });
-    setShowAddForm(false);
-    setNewProduct({ name: '', description: '', price: 0, image: '', category: '', stock: 0 });
-    fetchProducts();
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newProduct)
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to add product');
+      }
+      setShowAddForm(false);
+      setNewProduct({ name: '', description: '', price: 0, image: '', category: '', stock: 0 });
+      fetchProducts();
+    } catch (err: any) {
+      alert(`Error: ${err.message}`);
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean = false) => {

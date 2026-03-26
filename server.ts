@@ -22,8 +22,18 @@ async function startServer() {
     next();
   });
 
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", time: new Date().toISOString() });
+  app.get("/api/health", async (req, res) => {
+    try {
+      const { data, error } = await supabase.from("products").select("id").limit(1);
+      res.json({ 
+        status: "ok", 
+        time: new Date().toISOString(),
+        database: error ? "error" : "connected",
+        db_error: error ? error.message : null
+      });
+    } catch (e: any) {
+      res.json({ status: "error", error: e.message });
+    }
   });
 
   // Helper function to verify admin token
@@ -82,25 +92,49 @@ async function startServer() {
     try {
       const { email, password } = req.body;
       
-      const { data: admin, error } = await supabase
+      let { data: admin, error } = await supabase
         .from("admins")
         .select("id, email, role")
         .eq("email", email)
         .eq("password", password)
         .single();
       
+      // Fallback if role column is missing
+      if (error && error.message.includes('column "role" does not exist')) {
+        console.warn("Admin table missing 'role' column, attempting fallback...");
+        const { data: fallbackAdmin, error: fallbackError } = await supabase
+          .from("admins")
+          .select("id, email")
+          .eq("email", email)
+          .eq("password", password)
+          .single();
+        
+        if (fallbackAdmin) {
+          admin = { ...fallbackAdmin, role: 'superadmin' };
+          error = null;
+        } else {
+          error = fallbackError;
+        }
+      }
+      
+      if (error) {
+        console.error("Login error from Supabase:", error);
+        return res.status(401).json({ error: "Invalid credentials or database error" });
+      }
+      
       if (admin) {
-        if (admin.role === 'superadmin' || admin.role === 'admin' || admin.role === 'editor') {
+        const role = admin.role || 'admin';
+        if (role === 'superadmin' || role === 'admin' || role === 'editor') {
           const sessionToken = Buffer.from(JSON.stringify({
             id: admin.id,
-            role: admin.role,
+            role: role,
             time: Date.now()
           })).toString('base64');
           
           res.json({ 
             success: true, 
             token: sessionToken,
-            role: admin.role 
+            role: role 
           });
         } else {
           res.status(403).json({ error: "Access denied: Unauthorized role" });
