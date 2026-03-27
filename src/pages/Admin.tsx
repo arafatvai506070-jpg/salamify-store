@@ -51,10 +51,19 @@ export const Admin: React.FC = () => {
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
     if (token) {
-      setIsLoggedIn(true);
-      fetchProducts();
-      fetchAnalytics();
-      fetchOrders();
+      try {
+        const decoded = JSON.parse(atob(token));
+        if (Date.now() - decoded.time > 7 * 24 * 60 * 60 * 1000) {
+          handleLogout();
+        } else {
+          setIsLoggedIn(true);
+          fetchProducts();
+          fetchAnalytics();
+          fetchOrders();
+        }
+      } catch (e) {
+        handleLogout();
+      }
     }
   }, []);
 
@@ -117,6 +126,15 @@ export const Admin: React.FC = () => {
     setIsLoggedIn(false);
   };
 
+  const handleApiError = (err: any) => {
+    if (err.message === 'Session expired' || err.message === 'Invalid session' || err.message.includes('Unauthorized')) {
+      alert('আপনার সেশন শেষ হয়ে গেছে। দয়া করে আবার লগইন করুন।');
+      handleLogout();
+    } else {
+      alert(`Error: ${err.message}`);
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
       try {
@@ -131,7 +149,7 @@ export const Admin: React.FC = () => {
         }
         fetchProducts();
       } catch (err: any) {
-        alert(`Error: ${err.message}`);
+        handleApiError(err);
       }
     }
   };
@@ -160,7 +178,7 @@ export const Admin: React.FC = () => {
       setEditingId(null);
       fetchProducts();
     } catch (err: any) {
-      alert(`Error: ${err.message}`);
+      handleApiError(err);
     }
   };
 
@@ -182,7 +200,7 @@ export const Admin: React.FC = () => {
       fetchOrders();
       fetchAnalytics();
     } catch (err: any) {
-      alert(`Error: ${err.message}`);
+      handleApiError(err);
     }
   };
 
@@ -206,7 +224,7 @@ export const Admin: React.FC = () => {
       setNewProduct({ name: '', description: '', price: 0, image: '', category: '', stock: 0 });
       fetchProducts();
     } catch (err: any) {
-      alert(`Error: ${err.message}`);
+      handleApiError(err);
     }
   };
 

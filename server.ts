@@ -52,8 +52,8 @@ async function startServer() {
     
     try {
       const decoded = JSON.parse(Buffer.from(token, 'base64').toString());
-      // টোকেনটি যদি ১ দিনের বেশি পুরনো হয় তবে রিজেক্ট করবে
-      if (Date.now() - decoded.time > 24 * 60 * 60 * 1000) {
+      // টোকেনটি যদি ৭ দিনের বেশি পুরনো হয় তবে রিজেক্ট করবে
+      if (Date.now() - decoded.time > 7 * 24 * 60 * 60 * 1000) {
         console.log("Auth failed: Session expired");
         return res.status(401).json({ error: "Session expired" });
       }
