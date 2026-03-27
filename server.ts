@@ -168,9 +168,21 @@ async function startServer() {
   app.put("/api/products/:id", verifyAdmin, async (req, res) => {
     try {
       const { name, description, price, image, category, stock } = req.body;
+      
+      // Ensure numeric types are correct
+      const numericPrice = parseFloat(String(price));
+      const numericStock = parseInt(String(stock || 0));
+
       const { error } = await supabase
         .from("products")
-        .update({ name, description, price, image, category, stock: stock || 0 })
+        .update({ 
+          name, 
+          description, 
+          price: isNaN(numericPrice) ? 0 : numericPrice, 
+          image, 
+          category, 
+          stock: isNaN(numericStock) ? 0 : numericStock 
+        })
         .eq("id", req.params.id);
       
       if (error) throw error;
@@ -333,7 +345,7 @@ async function startServer() {
       // Format to match previous API response
       const formattedOrders = orders.map((o: any) => ({
         ...o,
-        items_summary: o.order_items.map((oi: any) => `${oi.products.name} (x${oi.quantity})`).join(", ")
+        items_summary: o.order_items.map((oi: any) => `${oi.products?.name || 'Deleted Product'} (x${oi.quantity})`).join(", ")
       }));
 
       res.json(formattedOrders);
@@ -361,7 +373,7 @@ async function startServer() {
 
       const formattedOrders = orders.map((o: any) => ({
         ...o,
-        items_summary: o.order_items.map((oi: any) => `${oi.products.name} (x${oi.quantity})`).join(", ")
+        items_summary: o.order_items.map((oi: any) => `${oi.products?.name || 'Deleted Product'} (x${oi.quantity})`).join(", ")
       }));
 
       res.json(formattedOrders);

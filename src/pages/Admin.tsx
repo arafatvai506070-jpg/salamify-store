@@ -130,6 +130,8 @@ export const Admin: React.FC = () => {
     if (err.message === 'Session expired' || err.message === 'Invalid session' || err.message.includes('Unauthorized')) {
       alert('আপনার সেশন শেষ হয়ে গেছে। দয়া করে আবার লগইন করুন।');
       handleLogout();
+    } else if (err.message.includes('violates foreign key constraint')) {
+      alert('এই প্রোডাক্টটি কোনো অর্ডারের সাথে যুক্ত আছে, তাই এটি ডিলিট করা যাচ্ছে না। দয়া করে প্রথমে সংশ্লিষ্ট অর্ডারগুলো চেক করুন অথবা প্রোডাক্টটি স্টক ০ করে দিন।\n\n(অথবা Supabase ড্যাশবোর্ডে SQL রান করে এই সীমাবদ্ধতা তুলে দিন)');
     } else {
       alert(`Error: ${err.message}`);
     }
@@ -147,7 +149,8 @@ export const Admin: React.FC = () => {
           const errorData = await res.json();
           throw new Error(errorData.error || 'Failed to delete product');
         }
-        fetchProducts();
+        await fetchProducts();
+        alert('প্রোডাক্টটি সফলভাবে ডিলিট করা হয়েছে।');
       } catch (err: any) {
         handleApiError(err);
       }
@@ -176,7 +179,8 @@ export const Admin: React.FC = () => {
         throw new Error(errorData.error || 'Failed to update product');
       }
       setEditingId(null);
-      fetchProducts();
+      await fetchProducts();
+      alert('প্রোডাক্ট সফলভাবে আপডেট করা হয়েছে।');
     } catch (err: any) {
       handleApiError(err);
     }
@@ -197,8 +201,9 @@ export const Admin: React.FC = () => {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Failed to update order status');
       }
-      fetchOrders();
-      fetchAnalytics();
+      await fetchOrders();
+      await fetchAnalytics();
+      alert('অর্ডারের স্ট্যাটাস সফলভাবে আপডেট করা হয়েছে।');
     } catch (err: any) {
       handleApiError(err);
     }
@@ -222,7 +227,8 @@ export const Admin: React.FC = () => {
       }
       setShowAddForm(false);
       setNewProduct({ name: '', description: '', price: 0, image: '', category: '', stock: 0 });
-      fetchProducts();
+      await fetchProducts();
+      alert('নতুন প্রোডাক্ট সফলভাবে যোগ করা হয়েছে।');
     } catch (err: any) {
       handleApiError(err);
     }
