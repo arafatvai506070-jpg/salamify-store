@@ -22,19 +22,21 @@ export const ProductDetails: React.FC = () => {
       .then(data => {
         setProduct(data);
         setLoading(false);
-        
-        // Scroll to form if hash is present in URL
-        if (window.location.hash === '#order-form') {
-          setTimeout(() => {
-            const form = document.getElementById('order-form');
-            if (form) {
-              form.scrollIntoView({ behavior: 'smooth' });
-            }
-          }, 500);
-        }
       })
       .catch(err => console.error(err));
   }, [id]);
+
+  useEffect(() => {
+    if (!loading && window.location.hash === '#order-form') {
+      const timer = setTimeout(() => {
+        const form = document.getElementById('order-form');
+        if (form) {
+          form.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, id]);
 
   const handleWhatsAppOrder = () => {
     if (!product) return;
@@ -199,7 +201,7 @@ export const ProductDetails: React.FC = () => {
         </div>
 
         {/* Bengali Order Form */}
-        <div id="order-form" className="max-w-4xl mx-auto bg-white rounded-[40px] border-4 border-emerald-500/10 p-8 md:p-16 shadow-[0_32px_64px_-12px_rgba(16,185,129,0.15)] relative overflow-hidden">
+        <div id="order-form" className="max-w-4xl mx-auto bg-white rounded-[40px] border-4 border-emerald-500/10 p-8 md:p-16 shadow-[0_32px_64px_-12px_rgba(16,185,129,0.15)] relative overflow-hidden scroll-mt-24">
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full -mr-32 -mt-32 opacity-50" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-50 rounded-full -ml-32 -mb-32 opacity-50" />
           

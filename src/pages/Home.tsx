@@ -23,7 +23,9 @@ export const Home: React.FC = () => {
         }
         setProducts(data);
         setFilteredProducts(data);
-        const uniqueCategories = ['All', ...new Set(data.map((p: Product) => p.category))] as string[];
+        const dynamicCategories = [...new Set(data.map((p: Product) => p.category))] as string[];
+        const fixedCategories = ['Drop Shoulder', 'Panjabi'];
+        const uniqueCategories = ['All', ...new Set([...fixedCategories, ...dynamicCategories])];
         setCategories(uniqueCategories);
         setLoading(false);
       })

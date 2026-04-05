@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Plus, Trash2, Edit, Save, X, LogOut, Package, 
   BarChart3, TrendingUp, DollarSign, Users, ShoppingBag,
-  LayoutDashboard, PieChart as PieChartIcon, Upload, Home as HomeIcon, ArrowLeft
+  LayoutDashboard, PieChart as PieChartIcon, Upload, Home as HomeIcon, ArrowLeft, RotateCcw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { 
@@ -34,7 +34,14 @@ export const Admin: React.FC = () => {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState<Partial<Product>>({});
+  const [editForm, setEditForm] = useState<Partial<Product>>({
+    name: '',
+    description: '',
+    price: 0,
+    image: '',
+    category: '',
+    stock: 0
+  });
   const [showAddForm, setShowAddForm] = useState(false);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({
     name: '',
@@ -127,13 +134,14 @@ export const Admin: React.FC = () => {
   };
 
   const handleApiError = (err: any) => {
+    console.error("API Error:", err);
     if (err.message === 'Session expired' || err.message === 'Invalid session' || err.message.includes('Unauthorized')) {
       alert('আপনার সেশন শেষ হয়ে গেছে। দয়া করে আবার লগইন করুন।');
       handleLogout();
     } else if (err.message.includes('violates foreign key constraint')) {
       alert('এই প্রোডাক্টটি কোনো অর্ডারের সাথে যুক্ত আছে, তাই এটি ডিলিট করা যাচ্ছে না। দয়া করে প্রথমে সংশ্লিষ্ট অর্ডারগুলো চেক করুন অথবা প্রোডাক্টটি স্টক ০ করে দিন।\n\n(অথবা Supabase ড্যাশবোর্ডে SQL রান করে এই সীমাবদ্ধতা তুলে দিন)');
     } else {
-      alert(`Error: ${err.message}`);
+      alert(`ত্রুটি হয়েছে: ${err.message || 'অজানা সমস্যা'}`);
     }
   };
 
@@ -375,13 +383,22 @@ export const Admin: React.FC = () => {
 
           <div className="flex gap-4">
             {activeTab === 'products' && (
-              <button 
-                onClick={() => setShowAddForm(true)}
-                className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-500/20"
-              >
-                <Plus size={20} />
-                <span>Add Product</span>
-              </button>
+              <div className="flex gap-4">
+                <button 
+                  onClick={fetchProducts}
+                  className="flex items-center space-x-2 px-6 py-3 bg-zinc-900 text-zinc-400 border border-white/10 rounded-xl font-bold hover:bg-zinc-800 hover:text-white transition-colors"
+                >
+                  <RotateCcw size={20} />
+                  <span>Refresh</span>
+                </button>
+                <button 
+                  onClick={() => setShowAddForm(true)}
+                  className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-500/20"
+                >
+                  <Plus size={20} />
+                  <span>Add Product</span>
+                </button>
+              </div>
             )}
             <button 
               onClick={handleLogout}
@@ -428,13 +445,6 @@ export const Admin: React.FC = () => {
                           onChange={e => setNewProduct({...newProduct, category: e.target.value})}
                           required
                         />
-                        <datalist id="category-suggestions">
-                          <option value="Drop Shoulder" />
-                          <option value="Panjabi" />
-                          <option value="Premium" />
-                          <option value="T-Shirt" />
-                          <option value="Polo" />
-                        </datalist>
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Price (৳)</label>
@@ -525,6 +535,13 @@ export const Admin: React.FC = () => {
 
             <div className="bg-zinc-900 border border-white/10 rounded-3xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
+                <datalist id="category-suggestions">
+                  <option value="Drop Shoulder" />
+                  <option value="Panjabi" />
+                  <option value="Premium" />
+                  <option value="T-Shirt" />
+                  <option value="Polo" />
+                </datalist>
                 <table className="w-full text-left">
                   <thead className="bg-zinc-800/50 border-b border-white/10">
                     <tr>
@@ -559,11 +576,18 @@ export const Admin: React.FC = () => {
                               />
                             </div>
                             {editingId === product.id ? (
-                              <div className="space-y-2">
+                              <div className="space-y-2 min-w-[200px]">
                                 <input 
-                                  className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
+                                  className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
                                   value={editForm.name}
+                                  placeholder="Product Name"
                                   onChange={e => setEditForm({...editForm, name: e.target.value})}
+                                />
+                                <textarea 
+                                  className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 outline-none min-h-[60px]"
+                                  value={editForm.description}
+                                  placeholder="Description"
+                                  onChange={e => setEditForm({...editForm, description: e.target.value})}
                                 />
                                 <input 
                                   className="w-full bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-emerald-500 outline-none"
@@ -573,27 +597,21 @@ export const Admin: React.FC = () => {
                                 />
                               </div>
                             ) : (
-                              <span className="font-medium text-zinc-100">{product.name}</span>
+                              <div className="flex flex-col">
+                                <span className="font-medium text-zinc-100">{product.name}</span>
+                                <span className="text-xs text-zinc-500 line-clamp-1 max-w-[200px]">{product.description}</span>
+                              </div>
                             )}
                           </div>
                         </td>
                         <td className="px-6 py-4">
                           {editingId === product.id ? (
-                            <>
-                              <input 
-                                className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
-                                list="category-suggestions"
-                                value={editForm.category}
-                                onChange={e => setEditForm({...editForm, category: e.target.value})}
-                              />
-                              <datalist id="category-suggestions">
-                                <option value="Drop Shoulder" />
-                                <option value="Panjabi" />
-                                <option value="Premium" />
-                                <option value="T-Shirt" />
-                                <option value="Polo" />
-                              </datalist>
-                            </>
+                            <input 
+                              className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
+                              list="category-suggestions"
+                              value={editForm.category || ''}
+                              onChange={e => setEditForm({...editForm, category: e.target.value})}
+                            />
                           ) : (
                             <span className="text-zinc-500">{product.category}</span>
                           )}

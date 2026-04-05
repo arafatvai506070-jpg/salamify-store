@@ -158,10 +158,13 @@ async function startServer() {
         .select();
       
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error("Failed to retrieve inserted product data");
+      }
       res.json({ id: data[0].id });
     } catch (error: any) {
       console.error("Error adding product:", error);
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message || "Internal server error while adding product" });
     }
   });
 
