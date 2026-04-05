@@ -62,7 +62,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         <div className="mt-auto space-y-3">
           <Link 
-            to={`/product/${product.id}`}
+            to={`/product/${product.id}#order-form`}
             className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 group/btn"
           >
             <span>অর্ডার করুন</span>

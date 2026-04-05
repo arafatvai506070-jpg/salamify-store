@@ -422,11 +422,19 @@ export const Admin: React.FC = () => {
                         <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Category</label>
                         <input 
                           placeholder="e.g. Premium" 
+                          list="category-suggestions"
                           className="w-full bg-zinc-800 border border-white/5 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500"
                           value={newProduct.category}
                           onChange={e => setNewProduct({...newProduct, category: e.target.value})}
                           required
                         />
+                        <datalist id="category-suggestions">
+                          <option value="Drop Shoulder" />
+                          <option value="Panjabi" />
+                          <option value="Premium" />
+                          <option value="T-Shirt" />
+                          <option value="Polo" />
+                        </datalist>
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Price (৳)</label>
@@ -571,11 +579,21 @@ export const Admin: React.FC = () => {
                         </td>
                         <td className="px-6 py-4">
                           {editingId === product.id ? (
-                            <input 
-                              className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
-                              value={editForm.category}
-                              onChange={e => setEditForm({...editForm, category: e.target.value})}
-                            />
+                            <>
+                              <input 
+                                className="bg-zinc-800 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white focus:border-emerald-500 outline-none"
+                                list="category-suggestions"
+                                value={editForm.category}
+                                onChange={e => setEditForm({...editForm, category: e.target.value})}
+                              />
+                              <datalist id="category-suggestions">
+                                <option value="Drop Shoulder" />
+                                <option value="Panjabi" />
+                                <option value="Premium" />
+                                <option value="T-Shirt" />
+                                <option value="Polo" />
+                              </datalist>
+                            </>
                           ) : (
                             <span className="text-zinc-500">{product.category}</span>
                           )}

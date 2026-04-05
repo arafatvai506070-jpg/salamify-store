@@ -70,6 +70,8 @@ CREATE TABLE admins (
 
 -- Seed initial data
 INSERT INTO products (name, description, price, image, category, stock) VALUES 
+('Premium Drop Shoulder Tee', 'High-quality cotton drop shoulder t-shirt for a relaxed and stylish look.', 1250.00, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop', 'Drop Shoulder', 50),
+('Royal Panjabi Collection', 'Exquisite Panjabi with intricate embroidery, perfect for special occasions.', 2500.00, 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=1000&auto=format&fit=crop', 'Panjabi', 30),
 ('Not Today Tee', 'The official uniform for those days when your bed is your best friend. 100% organic cotton, 0% motivation.', 850.00, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000&auto=format&fit=crop', 'Mood Swings', 50),
 ('Introverts Shield', 'A heavy-weight black tee that says I am here, but I am already thinking about leaving.', 1200.00, 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=1000&auto=format&fit=crop', 'Introvert Vibes', 30),
 ('Sarcasm Loading...', 'A minimalist sage green tee for those who speak fluent sarcasm. Warning: May cause eye-rolls.', 950.00, 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=1000&auto=format&fit=crop', 'Sarcasm Loaded', 40),

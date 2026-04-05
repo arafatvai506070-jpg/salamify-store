@@ -22,6 +22,16 @@ export const ProductDetails: React.FC = () => {
       .then(data => {
         setProduct(data);
         setLoading(false);
+        
+        // Scroll to form if hash is present in URL
+        if (window.location.hash === '#order-form') {
+          setTimeout(() => {
+            const form = document.getElementById('order-form');
+            if (form) {
+              form.scrollIntoView({ behavior: 'smooth' });
+            }
+          }, 500);
+        }
       })
       .catch(err => console.error(err));
   }, [id]);
