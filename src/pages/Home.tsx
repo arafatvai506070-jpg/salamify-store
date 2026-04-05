@@ -15,7 +15,10 @@ export const Home: React.FC = () => {
 
   useEffect(() => {
     fetch('/api/products')
-      .then(res => res.ok ? res.json() : [])
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then(data => {
         if (!Array.isArray(data)) {
           setLoading(false);
@@ -29,7 +32,10 @@ export const Home: React.FC = () => {
         setCategories(uniqueCategories);
         setLoading(false);
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        console.error("Failed to fetch products:", err);
+        setLoading(false);
+      });
   }, []);
 
   const handleCategoryChange = (category: string) => {

@@ -75,38 +75,63 @@ export const Admin: React.FC = () => {
   }, []);
 
   const fetchProducts = async () => {
-    const token = localStorage.getItem('admin_token');
-    const res = await fetch('/api/products', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      setProducts(data);
-    } else {
-      setProducts([]);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch('/api/products', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        if (res.status === 401) return handleLogout();
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+      // Don't alert here to avoid spamming the user on initial load
     }
   };
 
   const fetchOrders = async () => {
-    const token = localStorage.getItem('admin_token');
-    const res = await fetch('/api/admin/orders', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
-    if (Array.isArray(data)) {
-      setOrders(data);
-    } else {
-      setOrders([]);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch('/api/admin/orders', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        if (res.status === 401) return handleLogout();
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setOrders(data);
+      } else {
+        setOrders([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch orders:", error);
     }
   };
 
   const fetchAnalytics = async () => {
-    const token = localStorage.getItem('admin_token');
-    const res = await fetch('/api/admin/analytics', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
-    setAnalyticsData(data);
+    try {
+      const token = localStorage.getItem('admin_token');
+      const res = await fetch('/api/admin/analytics', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        if (res.status === 401) return handleLogout();
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      setAnalyticsData(data);
+    } catch (error) {
+      console.error("Failed to fetch analytics:", error);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {

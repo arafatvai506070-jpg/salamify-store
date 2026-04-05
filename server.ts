@@ -16,6 +16,11 @@ async function startServer() {
   // Basic middleware
   app.use(express.json({ limit: '50mb' }));
 
+  // Global error handler for unhandled rejections
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  });
+
   // Request logging for debugging
   app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
@@ -509,15 +514,15 @@ async function startServer() {
 
 const appPromise = startServer();
 
-// For local development
-if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
-  appPromise.then(app => {
-    const PORT = 3000;
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
+// Start the server
+const PORT = 3000;
+appPromise.then(app => {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
   });
-}
+}).catch(err => {
+  console.error("Failed to start server:", err);
+});
 
 // Export for Vercel
 export default async (req: any, res: any) => {
