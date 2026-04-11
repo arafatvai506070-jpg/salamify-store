@@ -106,7 +106,7 @@ export const CartPage: React.FC = () => {
               </button>
               
               <p className="text-center text-xs text-zinc-500 mt-4 font-medium">
-                Secure checkout powered by Ghorer Bazar
+                Secure checkout powered by Believe One
               </p>
             </div>
           </div>

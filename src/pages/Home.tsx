@@ -6,6 +6,8 @@ import { motion } from 'motion/react';
 import { cn } from '../lib/utils';
 import { ArrowRight, ShoppingBag, Star } from 'lucide-react';
 
+import { CategoryMegaMenu } from '../components/CategoryMegaMenu';
+
 export const Home: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -68,8 +70,14 @@ export const Home: React.FC = () => {
       <section className="relative bg-white overflow-hidden border-b border-zinc-100">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-emerald-50/30 -skew-x-12 translate-x-1/4 z-0" />
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between py-20 lg:py-32 gap-16">
-            <div className="lg:w-1/2 text-center lg:text-left">
+          <div className="flex flex-col lg:flex-row items-start justify-between py-12 lg:py-20 gap-12">
+            {/* Category Menu Column */}
+            <div className="w-full lg:w-auto self-stretch">
+              <CategoryMegaMenu />
+            </div>
+
+            {/* Hero Content Column */}
+            <div className="flex-1 text-center lg:text-left">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -83,7 +91,7 @@ export const Home: React.FC = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.6 }}
-                className="text-6xl md:text-8xl font-black text-zinc-900 leading-[0.95] mb-8 font-display tracking-tight"
+                className="text-5xl md:text-7xl font-black text-zinc-900 leading-[0.95] mb-8 font-display tracking-tight"
               >
                 প্রিমিয়াম পোশাক এর <br />
                 <span className="text-emerald-600">বিশ্বস্ত মাধ্যম।</span>
@@ -93,9 +101,9 @@ export const Home: React.FC = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="text-zinc-500 text-xl mb-12 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium"
+                className="text-zinc-500 text-lg mb-12 max-w-lg mx-auto lg:mx-0 leading-relaxed font-medium"
               >
-                Salamify আপনার জন্য নিয়ে এসেছে সেরা মানের পণ্য যা আধুনিক জীবনযাত্রার সাথে মানানসই এবং আরামদায়ক।
+                Believe One আপনার জন্য নিয়ে এসেছে সেরা মানের পণ্য যা আধুনিক জীবনযাত্রার সাথে মানানসই এবং আরামদায়ক।
               </motion.p>
               
               <motion.div 
@@ -106,52 +114,36 @@ export const Home: React.FC = () => {
               >
                 <button 
                   onClick={scrollToProducts}
-                  className="px-12 py-5 bg-emerald-600 text-white rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-600/30 flex items-center justify-center space-x-3 hover:-translate-y-1"
+                  className="px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-600/30 flex items-center justify-center space-x-3 hover:-translate-y-1"
                 >
                   <span>এখনই কিনুন</span>
                   <ArrowRight size={22} />
                 </button>
                 <button 
                   onClick={scrollToProducts}
-                  className="px-12 py-5 bg-white text-zinc-900 border-2 border-zinc-100 rounded-2xl font-black text-lg hover:bg-zinc-50 transition-all flex items-center justify-center space-x-3 hover:-translate-y-1 shadow-lg shadow-zinc-100"
+                  className="px-10 py-4 bg-white text-zinc-900 border-2 border-zinc-100 rounded-2xl font-black text-lg hover:bg-zinc-50 transition-all flex items-center justify-center space-x-3 hover:-translate-y-1 shadow-lg shadow-zinc-100"
                 >
                   <span>ক্যাটাগরি দেখুন</span>
                 </button>
               </motion.div>
             </div>
             
+            {/* Hero Image Column */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.9, x: 50 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 1, ease: "easeOut" }}
-              className="lg:w-1/2 relative"
+              className="lg:w-1/3 relative hidden xl:block"
             >
               <div className="absolute -inset-10 bg-emerald-200 blur-[100px] rounded-full opacity-20 animate-pulse"></div>
               <div className="relative rounded-[3rem] overflow-hidden border-[12px] border-white shadow-[0_40px_80px_-15px_rgba(0,0,0,0.2)]">
                 <img 
                   src="https://images.unsplash.com/photo-1562157873-818bc0726f68?q=80&w=2070&auto=format&fit=crop" 
                   alt="Premium Apparel" 
-                  className="w-full h-[600px] object-cover hover:scale-110 transition-transform duration-[2s]"
+                  className="w-full h-[500px] object-cover hover:scale-110 transition-transform duration-[2s]"
                   referrerPolicy="no-referrer"
                 />
               </div>
-              
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="absolute -bottom-10 -left-10 bg-white p-8 rounded-[2.5rem] shadow-2xl border border-zinc-50 hidden md:block"
-              >
-                <div className="flex items-center space-x-5">
-                  <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-emerald-600/30">
-                    <ShoppingBag size={32} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-emerald-600 font-black uppercase tracking-[0.2em] mb-1">নতুন কালেকশন</p>
-                    <p className="text-2xl font-black text-zinc-900">প্রিমিয়াম কোয়ালিটি</p>
-                  </div>
-                </div>
-              </motion.div>
             </motion.div>
           </div>
         </div>

@@ -300,11 +300,11 @@ export const Admin: React.FC = () => {
             <h1 className="text-2xl font-bold text-white">Admin Portal</h1>
             <img 
               src="/logo.png" 
-              alt="Salamify Logo" 
+              alt="Believe One Logo" 
               className="h-16 mx-auto mt-4 object-contain"
               referrerPolicy="no-referrer"
             />
-            <p className="text-zinc-500 text-sm mt-2">Salamify Secure Management</p>
+            <p className="text-zinc-500 text-sm mt-2">Believe One Secure Management</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -353,10 +353,10 @@ export const Admin: React.FC = () => {
               <HomeIcon size={24} className="group-hover:scale-110 transition-transform" />
             </Link>
             <div>
-              <h1 className="text-3xl font-bold text-white">Salamify Dashboard</h1>
+              <h1 className="text-3xl font-bold text-white">Believe One Dashboard</h1>
               <img 
                 src="/logo.png" 
-                alt="Salamify Logo" 
+                alt="Believe One Logo" 
                 className="h-10 mt-2 object-contain"
                 referrerPolicy="no-referrer"
               />

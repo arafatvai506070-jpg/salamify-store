@@ -65,7 +65,7 @@ export default function App() {
                     <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-600/20">
                       <ShoppingBag className="text-white" size={16} />
                     </div>
-                    <h2 className="text-xl font-black tracking-tighter text-zinc-900 font-display">Salamify<span className="text-emerald-500">.</span></h2>
+                    <h2 className="text-xl font-black tracking-tighter text-zinc-900 font-display">Believe One<span className="text-emerald-500">.</span></h2>
                   </div>
                   <p className="text-zinc-500 max-w-xs">প্রিমিয়াম কোয়ালিটি পণ্যের জন্য আপনার বিশ্বস্ত সঙ্গী। আমরা আপনার ঘরে সেরা পণ্যটি পৌঁছে দেই।</p>
                 </div>
@@ -93,7 +93,7 @@ export default function App() {
                 </div>
               </div>
               <div className="mt-12 pt-8 border-t border-zinc-100 flex flex-col md:flex-row justify-between items-center text-xs text-zinc-500">
-                <p>© ২০২৬ Salamify. সর্বস্বত্ব সংরক্ষিত।</p>
+                <p>© ২০২৬ Believe One. সর্বস্বত্ব সংরক্ষিত।</p>
                 <div className="flex space-x-6 mt-4 md:mt-0">
                   <a href="#" className="hover:text-emerald-600 transition-colors">প্রাইভেসি পলিসি</a>
                   <a href="#" className="hover:text-emerald-600 transition-colors">টার্মস অফ সার্ভিস</a>
